@@ -31,20 +31,6 @@ def team_html(team, logo_map, size=26):
     logo = team_logo(team, logo_map)
 
     if logo:
-        return f"""
-        <div style="display:flex; align-items:center; gap:8px;">
-            <img src="{logo}" width="{size}" height="{size}" style="border-radius:50%;">
-            <span>{team}</span>
-        </div>
-        """
-
-    return team
-
-
-def team_html(team, logo_map, size=26):
-    logo = team_logo(team, logo_map)
-
-    if logo:
         return (
             f'<div style="display:flex; align-items:center; gap:8px;">'
             f'<img src="{logo}" width="{size}" height="{size}" style="border-radius:50%;">'
@@ -60,13 +46,22 @@ def percent_bar(value, label=None):
     text = label if label is not None else pct(value)
 
     return (
-        f'<div style="width:100%; min-width:120px; '
-        f'background:rgba(128,128,128,0.18); '
+        f'<div style="display:flex; align-items:center; gap:10px; min-width:190px;">'
+        f'<div style="width:130px; background:rgba(128,128,128,0.18); '
         f'border-radius:999px; height:16px;">'
         f'<div style="width:{width:.1f}%; background:#2E86DE; '
         f'height:16px; border-radius:999px;"></div>'
         f'</div>'
+        f'<div style="min-width:48px; text-align:right; font-weight:700;">{text}</div>'
+        f'</div>'
     )
+
+
+st.set_page_config(
+    page_title="2026 World Cup Forecast",
+    page_icon="🌎",
+    layout="wide",
+)
 
 st.markdown(
     """
@@ -102,6 +97,19 @@ st.markdown(
     .small-muted {
         color: #777;
         font-size: 13px;
+    }
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    th, td {
+        padding: 12px 14px;
+        border-bottom: 1px solid rgba(128,128,128,0.25);
+        vertical-align: middle;
+    }
+    th {
+        font-weight: 800;
+        background: rgba(128,128,128,0.05);
     }
     </style>
     """,
@@ -162,6 +170,7 @@ for col, (_, row) in zip(cols, top5.iterrows()):
 
 chart_top = top5.copy()
 chart_top["Team"] = chart_top["team"]
+
 st.bar_chart(
     chart_top.set_index("Team")["champion_pct"] * 100,
     height=320,
@@ -233,7 +242,7 @@ with tab2:
         group_rows.append(
             {
                 "Team": team_html(row["team"], logo_map),
-                "Advance": pct(row["advance_pct"]),
+                "Advance": percent_bar(row["advance_pct"]),
                 "Round of 16": pct(row["round_16_pct"]),
                 "Quarterfinal": pct(row["quarterfinal_pct"]),
                 "Champion": pct(row["champion_pct"]),
