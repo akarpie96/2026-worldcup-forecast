@@ -1,3 +1,4 @@
+import json
 from pathlib import Path
 
 import pandas as pd
@@ -6,6 +7,7 @@ import streamlit as st
 FORECAST_PATH = Path("data/processed/tournament_forecast.csv")
 MATCHES_PATH = Path("data/processed/matches.csv")
 TEAMS_PATH = Path("data/processed/teams.csv")
+RAW_PATH = Path("data/raw/espn_2026_scoreboard.json")
 
 FLAG = {
     "Argentina": "🇦🇷", "Spain": "🇪🇸", "France": "🇫🇷", "England": "🏴",
@@ -32,6 +34,15 @@ def team_label(team):
     return f"{FLAG.get(team, '🏳️')} {team}"
 
 
+def get_last_updated():
+    try:
+        with open(RAW_PATH, "r") as f:
+            raw = json.load(f)
+        return raw.get("fetched_at_utc", "Unknown")
+    except FileNotFoundError:
+        return "Unknown"
+
+
 st.set_page_config(
     page_title="2026 World Cup Forecast",
     page_icon="🌎",
@@ -49,7 +60,7 @@ st.markdown(
     .subtitle {
         color: #666;
         font-size: 18px;
-        margin-bottom: 28px;
+        margin-bottom: 6px;
     }
     .metric-card {
         padding: 18px;
@@ -74,6 +85,7 @@ st.markdown(
 forecast = pd.read_csv(FORECAST_PATH)
 matches = pd.read_csv(MATCHES_PATH)
 teams = pd.read_csv(TEAMS_PATH)
+last_updated = get_last_updated()
 
 forecast["team_display"] = forecast["team"].apply(team_label)
 
@@ -82,6 +94,7 @@ st.markdown(
     '<div class="subtitle">Live projections powered by ESPN match data, team ratings, and Monte Carlo simulation.</div>',
     unsafe_allow_html=True,
 )
+st.caption(f"Last updated: {last_updated}")
 
 total_sims = int(forecast["sims"].max())
 completed_matches = int(matches["completed"].sum())
