@@ -9,29 +9,9 @@ MATCHES_PATH = Path("data/processed/matches.csv")
 TEAMS_PATH = Path("data/processed/teams.csv")
 RAW_PATH = Path("data/raw/espn_2026_scoreboard.json")
 
-FLAG = {
-    "Argentina": "🇦🇷", "Spain": "🇪🇸", "France": "🇫🇷", "England": "🏴",
-    "Germany": "🇩🇪", "Brazil": "🇧🇷", "Portugal": "🇵🇹", "Netherlands": "🇳🇱",
-    "Belgium": "🇧🇪", "Morocco": "🇲🇦", "Croatia": "🇭🇷", "Mexico": "🇲🇽",
-    "United States": "🇺🇸", "Uruguay": "🇺🇾", "Switzerland": "🇨🇭", "Colombia": "🇨🇴",
-    "Japan": "🇯🇵", "South Korea": "🇰🇷", "Scotland": "🏴", "Sweden": "🇸🇪",
-    "Senegal": "🇸🇳", "Türkiye": "🇹🇷", "Australia": "🇦🇺", "Canada": "🇨🇦",
-    "Ecuador": "🇪🇨", "Iran": "🇮🇷", "Austria": "🇦🇹", "Ivory Coast": "🇨🇮",
-    "Norway": "🇳🇴", "Egypt": "🇪🇬", "Ghana": "🇬🇭", "Tunisia": "🇹🇳",
-    "Czechia": "🇨🇿", "Algeria": "🇩🇿", "Paraguay": "🇵🇾", "Saudi Arabia": "🇸🇦",
-    "South Africa": "🇿🇦", "Qatar": "🇶🇦", "Bosnia-Herzegovina": "🇧🇦",
-    "New Zealand": "🇳🇿", "Congo DR": "🇨🇩", "Uzbekistan": "🇺🇿",
-    "Iraq": "🇮🇶", "Jordan": "🇯🇴", "Panama": "🇵🇦", "Haiti": "🇭🇹",
-    "Cape Verde": "🇨🇻", "Curaçao": "🇨🇼",
-}
-
 
 def pct(x):
     return f"{x * 100:.1f}%"
-
-
-def team_label(team):
-    return f"{FLAG.get(team, '🏳️')} {team}"
 
 
 def get_last_updated():
@@ -43,11 +23,50 @@ def get_last_updated():
         return "Unknown"
 
 
-st.set_page_config(
-    page_title="2026 World Cup Forecast",
-    page_icon="🌎",
-    layout="wide",
-)
+def team_logo(team, logo_map):
+    return logo_map.get(team, "")
+
+
+def team_html(team, logo_map, size=26):
+    logo = team_logo(team, logo_map)
+
+    if logo:
+        return f"""
+        <div style="display:flex; align-items:center; gap:8px;">
+            <img src="{logo}" width="{size}" height="{size}" style="border-radius:50%;">
+            <span>{team}</span>
+        </div>
+        """
+
+    return team
+
+
+def team_html(team, logo_map, size=26):
+    logo = team_logo(team, logo_map)
+
+    if logo:
+        return (
+            f'<div style="display:flex; align-items:center; gap:8px;">'
+            f'<img src="{logo}" width="{size}" height="{size}" style="border-radius:50%;">'
+            f'<span>{team}</span>'
+            f'</div>'
+        )
+
+    return str(team)
+
+
+def percent_bar(value, label=None):
+    width = max(0, min(100, value * 100))
+    text = label if label is not None else pct(value)
+
+    return (
+        f'<div style="width:100%; min-width:120px; '
+        f'background:rgba(128,128,128,0.18); '
+        f'border-radius:999px; height:16px;">'
+        f'<div style="width:{width:.1f}%; background:#2E86DE; '
+        f'height:16px; border-radius:999px;"></div>'
+        f'</div>'
+    )
 
 st.markdown(
     """
@@ -68,14 +87,21 @@ st.markdown(
         border: 1px solid rgba(128,128,128,0.25);
         background: rgba(128,128,128,0.06);
         text-align: center;
+        min-height: 160px;
     }
     .team-name {
-        font-size: 22px;
+        font-size: 18px;
         font-weight: 700;
+        margin-top: 8px;
     }
     .team-prob {
         font-size: 34px;
         font-weight: 800;
+        margin-top: 6px;
+    }
+    .small-muted {
+        color: #777;
+        font-size: 13px;
     }
     </style>
     """,
@@ -87,7 +113,13 @@ matches = pd.read_csv(MATCHES_PATH)
 teams = pd.read_csv(TEAMS_PATH)
 last_updated = get_last_updated()
 
-forecast["team_display"] = forecast["team"].apply(team_label)
+logo_map = dict(zip(teams["team"], teams["logo"]))
+
+forecast = forecast.merge(
+    teams[["team", "group", "logo", "abbrev"]],
+    on="team",
+    how="left",
+)
 
 st.markdown('<div class="big-title">🌎 2026 World Cup Forecast</div>', unsafe_allow_html=True)
 st.markdown(
@@ -114,19 +146,24 @@ cols = st.columns(5)
 
 for col, (_, row) in zip(cols, top5.iterrows()):
     with col:
+        logo = row.get("logo", "")
+
         st.markdown(
             f"""
             <div class="metric-card">
-                <div class="team-name">{team_label(row["team"])}</div>
+                <img src="{logo}" width="56" height="56" style="border-radius:50%;">
+                <div class="team-name">{row["team"]}</div>
                 <div class="team-prob">{pct(row["champion_pct"])}</div>
-                <div>Win World Cup</div>
+                <div class="small-muted">Win World Cup</div>
             </div>
             """,
             unsafe_allow_html=True,
         )
 
+chart_top = top5.copy()
+chart_top["Team"] = chart_top["team"]
 st.bar_chart(
-    top5.set_index("team_display")["champion_pct"] * 100,
+    chart_top.set_index("Team")["champion_pct"] * 100,
     height=320,
 )
 
@@ -137,44 +174,28 @@ tab1, tab2, tab3 = st.tabs(["Tournament odds", "Groups", "Matches"])
 with tab1:
     st.subheader("Full tournament forecast")
 
-    display = forecast.copy()
-    display = display.sort_values("champion_pct", ascending=False)
+    display = forecast.sort_values("champion_pct", ascending=False).copy()
 
-    for col in [
-        "advance_pct",
-        "round_16_pct",
-        "quarterfinal_pct",
-        "semifinal_pct",
-        "final_pct",
-        "champion_pct",
-    ]:
-        display[col] = display[col].apply(pct)
+    html_rows = []
 
-    display["Team"] = display["team"].apply(team_label)
-
-    st.dataframe(
-        display[
-            [
-                "Team",
-                "advance_pct",
-                "round_16_pct",
-                "quarterfinal_pct",
-                "semifinal_pct",
-                "final_pct",
-                "champion_pct",
-            ]
-        ].rename(
-            columns={
-                "advance_pct": "Advance",
-                "round_16_pct": "Round of 16",
-                "quarterfinal_pct": "Quarterfinal",
-                "semifinal_pct": "Semifinal",
-                "final_pct": "Final",
-                "champion_pct": "Champion",
+    for _, row in display.iterrows():
+        html_rows.append(
+            {
+                "Team": team_html(row["team"], logo_map),
+                "Advance": percent_bar(row["advance_pct"]),
+                "Round of 16": pct(row["round_16_pct"]),
+                "Quarterfinal": pct(row["quarterfinal_pct"]),
+                "Semifinal": pct(row["semifinal_pct"]),
+                "Final": pct(row["final_pct"]),
+                "Champion": pct(row["champion_pct"]),
             }
-        ),
-        use_container_width=True,
-        hide_index=True,
+        )
+
+    html_df = pd.DataFrame(html_rows)
+
+    st.markdown(
+        html_df.to_html(escape=False, index=False),
+        unsafe_allow_html=True,
     )
 
 with tab2:
@@ -186,42 +207,53 @@ with tab2:
     group_teams = teams[teams["group"] == selected_group]["team"].tolist()
     group_forecast = forecast[forecast["team"].isin(group_teams)].copy()
     group_forecast = group_forecast.sort_values("advance_pct", ascending=False)
-    group_forecast["Team"] = group_forecast["team"].apply(team_label)
 
-    chart_data = group_forecast.set_index("Team")["advance_pct"] * 100
-    st.bar_chart(chart_data, height=300)
+    st.markdown(f"### Group {selected_group}")
 
-    table = group_forecast.copy()
-    for col in ["advance_pct", "round_16_pct", "quarterfinal_pct", "champion_pct"]:
-        table[col] = table[col].apply(pct)
+    for _, row in group_forecast.iterrows():
+        left, right = st.columns([2, 3])
 
-    st.dataframe(
-        table[
-            [
-                "Team",
-                "advance_pct",
-                "round_16_pct",
-                "quarterfinal_pct",
-                "champion_pct",
-            ]
-        ].rename(
-            columns={
-                "advance_pct": "Advance",
-                "round_16_pct": "Round of 16",
-                "quarterfinal_pct": "Quarterfinal",
-                "champion_pct": "Champion",
+        with left:
+            st.markdown(
+                team_html(row["team"], logo_map, size=34),
+                unsafe_allow_html=True,
+            )
+
+        with right:
+            st.markdown(
+                percent_bar(row["advance_pct"], label=pct(row["advance_pct"])),
+                unsafe_allow_html=True,
+            )
+
+    st.markdown("#### Group table")
+
+    group_rows = []
+
+    for _, row in group_forecast.iterrows():
+        group_rows.append(
+            {
+                "Team": team_html(row["team"], logo_map),
+                "Advance": pct(row["advance_pct"]),
+                "Round of 16": pct(row["round_16_pct"]),
+                "Quarterfinal": pct(row["quarterfinal_pct"]),
+                "Champion": pct(row["champion_pct"]),
             }
-        ),
-        use_container_width=True,
-        hide_index=True,
+        )
+
+    group_df = pd.DataFrame(group_rows)
+
+    st.markdown(
+        group_df.to_html(escape=False, index=False),
+        unsafe_allow_html=True,
     )
 
 with tab3:
     st.subheader("Match schedule and results")
 
     match_view = matches.copy()
-    match_view["Home"] = match_view["home_team"].apply(team_label)
-    match_view["Away"] = match_view["away_team"].apply(team_label)
+
+    match_view["Home"] = match_view["home_team"].apply(lambda t: team_html(t, logo_map))
+    match_view["Away"] = match_view["away_team"].apply(lambda t: team_html(t, logo_map))
 
     match_view["Score"] = (
         match_view["home_score"].astype(str)
@@ -237,23 +269,24 @@ with tab3:
     if stage != "All":
         match_view = match_view[match_view["season_slug"] == stage]
 
-    st.dataframe(
-        match_view[
-            [
-                "date_utc",
-                "season_slug",
-                "Home",
-                "Score",
-                "Away",
-                "status_desc",
-            ]
-        ].rename(
-            columns={
-                "date_utc": "Date UTC",
-                "season_slug": "Stage",
-                "status_desc": "Status",
-            }
-        ),
-        use_container_width=True,
-        hide_index=True,
+    match_table = match_view[
+        [
+            "date_utc",
+            "season_slug",
+            "Home",
+            "Score",
+            "Away",
+            "status_desc",
+        ]
+    ].rename(
+        columns={
+            "date_utc": "Date UTC",
+            "season_slug": "Stage",
+            "status_desc": "Status",
+        }
+    )
+
+    st.markdown(
+        match_table.to_html(escape=False, index=False),
+        unsafe_allow_html=True,
     )

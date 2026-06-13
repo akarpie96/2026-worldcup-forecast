@@ -1,49 +1,49 @@
-group,team,abbrev
-A,Czechia,CZE
-A,Mexico,MEX
-A,South Africa,RSA
-A,South Korea,KOR
-B,Bosnia-Herzegovina,BIH
-B,Canada,CAN
-B,Qatar,QAT
-B,Switzerland,SUI
-C,Brazil,BRA
-C,Haiti,HAI
-C,Morocco,MAR
-C,Scotland,SCO
-D,Australia,AUS
-D,Paraguay,PAR
-D,Türkiye,TUR
-D,United States,USA
-E,Curaçao,CUW
-E,Ecuador,ECU
-E,Germany,GER
-E,Ivory Coast,CIV
-F,Japan,JPN
-F,Netherlands,NED
-F,Sweden,SWE
-F,Tunisia,TUN
-G,Belgium,BEL
-G,Egypt,EGY
-G,Iran,IRN
-G,New Zealand,NZL
-H,Cape Verde,CPV
-H,Saudi Arabia,KSA
-H,Spain,ESP
-H,Uruguay,URU
-I,France,FRA
-I,Iraq,IRQ
-I,Norway,NOR
-I,Senegal,SEN
-J,Algeria,ALG
-J,Argentina,ARG
-J,Austria,AUT
-J,Jordan,JOR
-K,Colombia,COL
-K,Congo DR,COD
-K,Portugal,POR
-K,Uzbekistan,UZB
-L,Croatia,CRO
-L,England,ENG
-L,Ghana,GHA
-L,Panama,PAN
+group,team_id,team,abbrev,logo,color
+A,450,Czechia,CZE,https://a.espncdn.com/i/teamlogos/countries/500/cze.png,d7141a
+A,203,Mexico,MEX,https://a.espncdn.com/i/teamlogos/countries/500/mex.png,006847
+A,467,South Africa,RSA,https://a.espncdn.com/i/teamlogos/countries/500/rsa.png,087d5a
+A,451,South Korea,KOR,https://a.espncdn.com/i/teamlogos/countries/500/kors.png,ce2028
+B,452,Bosnia-Herzegovina,BIH,https://a.espncdn.com/i/teamlogos/countries/500/bih.png,112855
+B,206,Canada,CAN,https://a.espncdn.com/i/teamlogos/countries/500/can.png,ed2224
+B,4398,Qatar,QAT,https://a.espncdn.com/i/teamlogos/countries/500/qat.png,691a40
+B,475,Switzerland,SUI,https://a.espncdn.com/i/teamlogos/countries/500/sui.png,d72b2c
+C,205,Brazil,BRA,https://a.espncdn.com/i/teamlogos/countries/500/bra.png,fee000
+C,2654,Haiti,HAI,https://a.espncdn.com/i/teamlogos/countries/500/hai.png,0033a0
+C,2869,Morocco,MAR,https://a.espncdn.com/i/teamlogos/countries/500/mar.png,009060
+C,580,Scotland,SCO,https://a.espncdn.com/i/teamlogos/countries/500/sco.png,1a2d69
+D,628,Australia,AUS,https://a.espncdn.com/i/teamlogos/countries/500/aus.png,2a2d7c
+D,210,Paraguay,PAR,https://a.espncdn.com/i/teamlogos/countries/500/par.png,ea2300
+D,465,Türkiye,TUR,https://a.espncdn.com/i/teamlogos/countries/500/tur.png,ffffff
+D,660,United States,USA,https://a.espncdn.com/i/teamlogos/countries/500/usa.png,d42339
+E,11678,Curaçao,CUW,https://a.espncdn.com/i/teamlogos/soccer/500/11678.png,0537e4
+E,209,Ecuador,ECU,https://a.espncdn.com/i/teamlogos/countries/500/ecu.png,ffdd00
+E,481,Germany,GER,https://a.espncdn.com/i/teamlogos/countries/500/ger.png,000000
+E,4789,Ivory Coast,CIV,https://a.espncdn.com/i/teamlogos/countries/500/civ.png,d48c00
+F,627,Japan,JPN,https://a.espncdn.com/i/teamlogos/countries/500/jpn.png,ed1c24
+F,449,Netherlands,NED,https://a.espncdn.com/i/teamlogos/countries/500/ned.png,fb5d00
+F,466,Sweden,SWE,https://a.espncdn.com/i/teamlogos/countries/500/swe.png,fecb00
+F,659,Tunisia,TUN,https://a.espncdn.com/i/teamlogos/countries/500/tun.png,D20300
+G,459,Belgium,BEL,https://a.espncdn.com/i/teamlogos/countries/500/bel.png,ef3340
+G,2620,Egypt,EGY,https://a.espncdn.com/i/teamlogos/countries/500/egy.png,D20300
+G,469,Iran,IRN,https://a.espncdn.com/i/teamlogos/countries/500/irn.png,da0000
+G,2666,New Zealand,NZL,https://a.espncdn.com/i/teamlogos/countries/500/nzl.png,273476
+H,2597,Cape Verde,CPV,https://a.espncdn.com/i/teamlogos/countries/500/cpv.png,0000ff
+H,655,Saudi Arabia,KSA,https://a.espncdn.com/i/teamlogos/countries/500/ksa.png,dddddd
+H,164,Spain,ESP,https://a.espncdn.com/i/teamlogos/countries/500/esp.png,c60b1e
+H,212,Uruguay,URU,https://a.espncdn.com/i/teamlogos/countries/500/uru.png,003da5
+I,478,France,FRA,https://a.espncdn.com/i/teamlogos/countries/500/fra.png,0c2fff
+I,4375,Iraq,IRQ,https://a.espncdn.com/i/teamlogos/countries/500/irq.png,00843d
+I,464,Norway,NOR,https://a.espncdn.com/i/teamlogos/countries/500/nor.png,ef2b2d
+I,654,Senegal,SEN,https://a.espncdn.com/i/teamlogos/countries/500/sen.png,00853f
+J,624,Algeria,ALG,https://a.espncdn.com/i/teamlogos/countries/500/alg.png,5bbd19
+J,202,Argentina,ARG,https://a.espncdn.com/i/teamlogos/countries/500/arg.png,74acdf
+J,474,Austria,AUT,https://a.espncdn.com/i/teamlogos/countries/500/aut.png,d72b2c
+J,2917,Jordan,JOR,https://a.espncdn.com/i/teamlogos/countries/500/jor.png,E70000
+K,208,Colombia,COL,https://a.espncdn.com/i/teamlogos/countries/500/col.png,fbd632
+K,2850,Congo DR,COD,https://a.espncdn.com/i/teamlogos/countries/500/rdc.png,418fde
+K,482,Portugal,POR,https://a.espncdn.com/i/teamlogos/countries/500/por.png,da291c
+K,2570,Uzbekistan,UZB,https://a.espncdn.com/i/teamlogos/countries/500/uzb.png,0081d6
+L,477,Croatia,CRO,https://a.espncdn.com/i/teamlogos/countries/500/cro.png,ff0000
+L,448,England,ENG,https://a.espncdn.com/i/teamlogos/countries/500/eng.png,ffffff
+L,4469,Ghana,GHA,https://a.espncdn.com/i/teamlogos/countries/500/gha.png,ce2931
+L,2659,Panama,PAN,https://a.espncdn.com/i/teamlogos/countries/500/pan.png,d21034

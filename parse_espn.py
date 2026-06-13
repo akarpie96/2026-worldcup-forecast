@@ -24,6 +24,22 @@ def parse_score(score):
         return None
 
 
+def parse_team(competitor):
+    team = competitor.get("team", {})
+
+    return {
+        "team_id": team.get("id"),
+        "team": team.get("displayName"),
+        "abbrev": team.get("abbreviation"),
+        "logo": team.get("logo"),
+        "color": team.get("color"),
+        "home_away": competitor.get("homeAway"),
+        "score": parse_score(competitor.get("score")),
+        "winner": competitor.get("winner"),
+        "form": competitor.get("form"),
+    }
+
+
 def main():
     with open(RAW_PATH, "r") as f:
         raw = json.load(f)
@@ -32,6 +48,7 @@ def main():
     events = payload.get("events", [])
 
     rows = []
+    team_rows = []
 
     for event in events:
         event_id = event.get("id")
@@ -56,21 +73,7 @@ def main():
         if len(competitors) != 2:
             continue
 
-        parsed_teams = []
-
-        for c in competitors:
-            team = c.get("team", {})
-            parsed_teams.append(
-                {
-                    "team_id": team.get("id"),
-                    "team": team.get("displayName"),
-                    "abbrev": team.get("abbreviation"),
-                    "home_away": c.get("homeAway"),
-                    "score": parse_score(c.get("score")),
-                    "winner": c.get("winner"),
-                    "form": c.get("form"),
-                }
-            )
+        parsed_teams = [parse_team(c) for c in competitors]
 
         home = next((t for t in parsed_teams if t["home_away"] == "home"), parsed_teams[0])
         away = next((t for t in parsed_teams if t["home_away"] == "away"), parsed_teams[1])
@@ -89,15 +92,32 @@ def main():
                 "home_team_id": home["team_id"],
                 "home_team": home["team"],
                 "home_abbrev": home["abbrev"],
+                "home_logo": home["logo"],
+                "home_color": home["color"],
                 "home_score": home["score"],
                 "home_form": home["form"],
                 "away_team_id": away["team_id"],
                 "away_team": away["team"],
                 "away_abbrev": away["abbrev"],
+                "away_logo": away["logo"],
+                "away_color": away["color"],
                 "away_score": away["score"],
                 "away_form": away["form"],
             }
         )
+
+        if group is not None:
+            for t in parsed_teams:
+                team_rows.append(
+                    {
+                        "group": group,
+                        "team_id": t["team_id"],
+                        "team": t["team"],
+                        "abbrev": t["abbrev"],
+                        "logo": t["logo"],
+                        "color": t["color"],
+                    }
+                )
 
     df = pd.DataFrame(rows)
 
@@ -106,17 +126,7 @@ def main():
     group_stage = df[df["group"].notna()].copy()
     group_stage.to_csv(OUT_DIR / "group_stage_matches.csv", index=False)
 
-    teams = pd.concat(
-        [
-            group_stage[["group", "home_team", "home_abbrev"]].rename(
-                columns={"home_team": "team", "home_abbrev": "abbrev"}
-            ),
-            group_stage[["group", "away_team", "away_abbrev"]].rename(
-                columns={"away_team": "team", "away_abbrev": "abbrev"}
-            ),
-        ]
-    ).drop_duplicates()
-
+    teams = pd.DataFrame(team_rows).drop_duplicates(subset=["group", "team"])
     teams = teams.sort_values(["group", "team"])
     teams.to_csv(OUT_DIR / "teams.csv", index=False)
 
