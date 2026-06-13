@@ -1,0 +1,105 @@
+match_id,date_utc,name,season_slug,group,alt_game_note,status_name,status_desc,completed,home_team_id,home_team,home_abbrev,home_score,home_form,away_team_id,away_team,away_abbrev,away_score,away_form
+760415,2026-06-11T19:00Z,South Africa at Mexico,group-stage,A,"FIFA World Cup, Group A",STATUS_FULL_TIME,Full Time,True,203,Mexico,MEX,2,WWWWD,467,South Africa,RSA,0,LWDLD
+760414,2026-06-12T02:00Z,Czechia at South Korea,group-stage,A,"FIFA World Cup, Group A",STATUS_FULL_TIME,Full Time,True,451,South Korea,KOR,2,WWWLL,450,Czechia,CZE,1,LWWWW
+760416,2026-06-12T19:00Z,Bosnia-Herzegovina at Canada,group-stage,B,"FIFA World Cup, Group B",STATUS_FULL_TIME,Full Time,True,206,Canada,CAN,1,DDWDD,452,Bosnia-Herzegovina,BIH,1,DDDWW
+760417,2026-06-13T01:00Z,Paraguay at United States,group-stage,D,"FIFA World Cup, Group D",STATUS_FULL_TIME,Full Time,True,660,United States,USA,4,WLWLL,210,Paraguay,PAR,1,LWLWW
+760420,2026-06-13T19:00Z,Switzerland at Qatar,group-stage,B,"FIFA World Cup, Group B",STATUS_HALFTIME,Halftime,False,4398,Qatar,QAT,0,DLLWD,475,Switzerland,SUI,1,DWDLD
+760419,2026-06-13T22:00Z,Morocco at Brazil,group-stage,C,"FIFA World Cup, Group C",STATUS_SCHEDULED,Scheduled,False,205,Brazil,BRA,0,WWWLD,2869,Morocco,MAR,0,DWWWD
+760418,2026-06-14T01:00Z,Scotland at Haiti,group-stage,C,"FIFA World Cup, Group C",STATUS_SCHEDULED,Scheduled,False,2654,Haiti,HAI,0,LWDLW,580,Scotland,SCO,0,WWLLW
+760421,2026-06-14T04:00Z,Türkiye at Australia,group-stage,D,"FIFA World Cup, Group D",STATUS_SCHEDULED,Scheduled,False,628,Australia,AUS,0,DLWWL,465,Türkiye,TUR,0,WWWWD
+760422,2026-06-14T17:00Z,Curaçao at Germany,group-stage,E,"FIFA World Cup, Group E",STATUS_SCHEDULED,Scheduled,False,481,Germany,GER,0,WWWWW,11678,Curaçao,CUW,0,WLLLD
+760425,2026-06-14T20:00Z,Japan at Netherlands,group-stage,F,"FIFA World Cup, Group F",STATUS_SCHEDULED,Scheduled,False,449,Netherlands,NED,0,WLDWW,627,Japan,JPN,0,WWWWW
+760423,2026-06-14T23:00Z,Ecuador at Ivory Coast,group-stage,E,"FIFA World Cup, Group E",STATUS_SCHEDULED,Scheduled,False,4789,Ivory Coast,CIV,0,WWWLW,209,Ecuador,ECU,0,WWDDW
+760424,2026-06-15T02:00Z,Tunisia at Sweden,group-stage,F,"FIFA World Cup, Group F",STATUS_SCHEDULED,Scheduled,False,466,Sweden,SWE,0,DLWWD,659,Tunisia,TUN,0,LLDWL
+760428,2026-06-15T16:00Z,Cape Verde at Spain,group-stage,H,"FIFA World Cup, Group H",STATUS_SCHEDULED,Scheduled,False,164,Spain,ESP,0,WDDWD,2597,Cape Verde,CPV,0,WWLLL
+760426,2026-06-15T19:00Z,Egypt at Belgium,group-stage,G,"FIFA World Cup, Group G",STATUS_SCHEDULED,Scheduled,False,459,Belgium,BEL,0,WWDWW,2620,Egypt,EGY,0,LWDWL
+760429,2026-06-15T22:00Z,Uruguay at Saudi Arabia,group-stage,H,"FIFA World Cup, Group H",STATUS_SCHEDULED,Scheduled,False,655,Saudi Arabia,KSA,0,DWLLL,212,Uruguay,URU,0,DDLDW
+760427,2026-06-16T01:00Z,New Zealand at Iran,group-stage,G,"FIFA World Cup, Group G",STATUS_SCHEDULED,Scheduled,False,469,Iran,IRN,0,WWWLL,2666,New Zealand,NZL,0,LLWLL
+760432,2026-06-16T19:00Z,Senegal at France,group-stage,I,"FIFA World Cup, Group I",STATUS_SCHEDULED,Scheduled,False,478,France,FRA,0,WLWWW,654,Senegal,SEN,0,DLWWW
+760430,2026-06-16T22:00Z,Norway at Iraq,group-stage,I,"FIFA World Cup, Group I",STATUS_SCHEDULED,Scheduled,False,4375,Iraq,IRQ,0,LDWWW,464,Norway,NOR,0,DWDLW
+760433,2026-06-17T01:00Z,Algeria at Argentina,group-stage,J,"FIFA World Cup, Group J",STATUS_SCHEDULED,Scheduled,False,202,Argentina,ARG,0,WWWWW,624,Algeria,ALG,0,WWDWL
+760431,2026-06-17T04:00Z,Jordan at Austria,group-stage,J,"FIFA World Cup, Group J",STATUS_SCHEDULED,Scheduled,False,474,Austria,AUT,0,WWWDW,2917,Jordan,JOR,0,LLDDD
+760435,2026-06-17T17:00Z,Congo DR at Portugal,group-stage,K,"FIFA World Cup, Group K",STATUS_SCHEDULED,Scheduled,False,482,Portugal,POR,0,WWWDW,2850,Congo DR,COD,0,LDWWL
+760437,2026-06-17T20:00Z,Croatia at England,group-stage,L,"FIFA World Cup, Group L",STATUS_SCHEDULED,Scheduled,False,448,England,ENG,0,WWLDW,477,Croatia,CRO,0,WLLWW
+760434,2026-06-17T23:00Z,Panama at Ghana,group-stage,L,"FIFA World Cup, Group L",STATUS_SCHEDULED,Scheduled,False,4469,Ghana,GHA,0,DLLLL,2659,Panama,PAN,0,DWLWD
+760436,2026-06-18T02:00Z,Colombia at Uzbekistan,group-stage,K,"FIFA World Cup, Group K",STATUS_SCHEDULED,Scheduled,False,2570,Uzbekistan,UZB,0,LLWWD,208,Colombia,COL,0,WWLLW
+760438,2026-06-18T16:00Z,South Africa at Czechia,group-stage,A,"FIFA World Cup, Group A",STATUS_SCHEDULED,Scheduled,False,450,Czechia,CZE,0,LWWWW,467,South Africa,RSA,0,LWDLD
+760439,2026-06-18T19:00Z,Bosnia-Herzegovina at Switzerland,group-stage,B,"FIFA World Cup, Group B",STATUS_SCHEDULED,Scheduled,False,475,Switzerland,SUI,0,DWDLD,452,Bosnia-Herzegovina,BIH,0,DDDWW
+760440,2026-06-18T22:00Z,Qatar at Canada,group-stage,B,"FIFA World Cup, Group B",STATUS_SCHEDULED,Scheduled,False,206,Canada,CAN,0,DDWDD,4398,Qatar,QAT,0,DLLWD
+760441,2026-06-19T01:00Z,South Korea at Mexico,group-stage,A,"FIFA World Cup, Group A",STATUS_SCHEDULED,Scheduled,False,203,Mexico,MEX,0,WWWWD,451,South Korea,KOR,0,WWWLL
+760442,2026-06-19T19:00Z,Australia at United States,group-stage,D,"FIFA World Cup, Group D",STATUS_SCHEDULED,Scheduled,False,660,United States,USA,0,WLWLL,628,Australia,AUS,0,DLWWL
+760445,2026-06-19T22:00Z,Morocco at Scotland,group-stage,C,"FIFA World Cup, Group C",STATUS_SCHEDULED,Scheduled,False,580,Scotland,SCO,0,WWLLW,2869,Morocco,MAR,0,DWWWD
+760444,2026-06-20T00:30Z,Haiti at Brazil,group-stage,C,"FIFA World Cup, Group C",STATUS_SCHEDULED,Scheduled,False,205,Brazil,BRA,0,WWWLD,2654,Haiti,HAI,0,LWDLW
+760443,2026-06-20T03:00Z,Paraguay at Türkiye,group-stage,D,"FIFA World Cup, Group D",STATUS_SCHEDULED,Scheduled,False,465,Türkiye,TUR,0,WWWWD,210,Paraguay,PAR,0,LWLWW
+760447,2026-06-20T17:00Z,Sweden at Netherlands,group-stage,F,"FIFA World Cup, Group F",STATUS_SCHEDULED,Scheduled,False,449,Netherlands,NED,0,WLDWW,466,Sweden,SWE,0,DLWWD
+760448,2026-06-20T20:00Z,Ivory Coast at Germany,group-stage,E,"FIFA World Cup, Group E",STATUS_SCHEDULED,Scheduled,False,481,Germany,GER,0,WWWWW,4789,Ivory Coast,CIV,0,WWWLW
+760446,2026-06-21T00:00Z,Curaçao at Ecuador,group-stage,E,"FIFA World Cup, Group E",STATUS_SCHEDULED,Scheduled,False,209,Ecuador,ECU,0,WWDDW,11678,Curaçao,CUW,0,WLLLD
+760449,2026-06-21T04:00Z,Japan at Tunisia,group-stage,F,"FIFA World Cup, Group F",STATUS_SCHEDULED,Scheduled,False,659,Tunisia,TUN,0,LLDWL,627,Japan,JPN,0,WWWWW
+760453,2026-06-21T16:00Z,Saudi Arabia at Spain,group-stage,H,"FIFA World Cup, Group H",STATUS_SCHEDULED,Scheduled,False,164,Spain,ESP,0,WDDWD,655,Saudi Arabia,KSA,0,DWLLL
+760451,2026-06-21T19:00Z,Iran at Belgium,group-stage,G,"FIFA World Cup, Group G",STATUS_SCHEDULED,Scheduled,False,459,Belgium,BEL,0,WWDWW,469,Iran,IRN,0,WWWLL
+760450,2026-06-21T22:00Z,Cape Verde at Uruguay,group-stage,H,"FIFA World Cup, Group H",STATUS_SCHEDULED,Scheduled,False,212,Uruguay,URU,0,DDLDW,2597,Cape Verde,CPV,0,WWLLL
+760452,2026-06-22T01:00Z,Egypt at New Zealand,group-stage,G,"FIFA World Cup, Group G",STATUS_SCHEDULED,Scheduled,False,2666,New Zealand,NZL,0,LLWLL,2620,Egypt,EGY,0,LWDWL
+760456,2026-06-22T17:00Z,Austria at Argentina,group-stage,J,"FIFA World Cup, Group J",STATUS_SCHEDULED,Scheduled,False,202,Argentina,ARG,0,WWWWW,474,Austria,AUT,0,WWWDW
+760457,2026-06-22T21:00Z,Iraq at France,group-stage,I,"FIFA World Cup, Group I",STATUS_SCHEDULED,Scheduled,False,478,France,FRA,0,WLWWW,4375,Iraq,IRQ,0,LDWWW
+760454,2026-06-23T00:00Z,Senegal at Norway,group-stage,I,"FIFA World Cup, Group I",STATUS_SCHEDULED,Scheduled,False,464,Norway,NOR,0,DWDLW,654,Senegal,SEN,0,DLWWW
+760455,2026-06-23T03:00Z,Algeria at Jordan,group-stage,J,"FIFA World Cup, Group J",STATUS_SCHEDULED,Scheduled,False,2917,Jordan,JOR,0,LLDDD,624,Algeria,ALG,0,WWDWL
+760461,2026-06-23T17:00Z,Uzbekistan at Portugal,group-stage,K,"FIFA World Cup, Group K",STATUS_SCHEDULED,Scheduled,False,482,Portugal,POR,0,WWWDW,2570,Uzbekistan,UZB,0,LLWWD
+760458,2026-06-23T20:00Z,Ghana at England,group-stage,L,"FIFA World Cup, Group L",STATUS_SCHEDULED,Scheduled,False,448,England,ENG,0,WWLDW,4469,Ghana,GHA,0,DLLLL
+760460,2026-06-23T23:00Z,Croatia at Panama,group-stage,L,"FIFA World Cup, Group L",STATUS_SCHEDULED,Scheduled,False,2659,Panama,PAN,0,DWLWD,477,Croatia,CRO,0,WLLWW
+760459,2026-06-24T02:00Z,Congo DR at Colombia,group-stage,K,"FIFA World Cup, Group K",STATUS_SCHEDULED,Scheduled,False,208,Colombia,COL,0,WWLLW,2850,Congo DR,COD,0,LDWWL
+760462,2026-06-24T19:00Z,Qatar at Bosnia-Herzegovina,group-stage,B,"FIFA World Cup, Group B",STATUS_SCHEDULED,Scheduled,False,452,Bosnia-Herzegovina,BIH,0,DDDWW,4398,Qatar,QAT,0,DLLWD
+760463,2026-06-24T19:00Z,Canada at Switzerland,group-stage,B,"FIFA World Cup, Group B",STATUS_SCHEDULED,Scheduled,False,475,Switzerland,SUI,0,DWDLD,206,Canada,CAN,0,DDWDD
+760464,2026-06-24T22:00Z,Haiti at Morocco,group-stage,C,"FIFA World Cup, Group C",STATUS_SCHEDULED,Scheduled,False,2869,Morocco,MAR,0,DWWWD,2654,Haiti,HAI,0,LWDLW
+760465,2026-06-24T22:00Z,Brazil at Scotland,group-stage,C,"FIFA World Cup, Group C",STATUS_SCHEDULED,Scheduled,False,580,Scotland,SCO,0,WWLLW,205,Brazil,BRA,0,WWWLD
+760467,2026-06-25T01:00Z,Mexico at Czechia,group-stage,A,"FIFA World Cup, Group A",STATUS_SCHEDULED,Scheduled,False,450,Czechia,CZE,0,LWWWW,203,Mexico,MEX,0,WWWWD
+760466,2026-06-25T01:00Z,South Korea at South Africa,group-stage,A,"FIFA World Cup, Group A",STATUS_SCHEDULED,Scheduled,False,467,South Africa,RSA,0,LWDLD,451,South Korea,KOR,0,WWWLL
+760473,2026-06-25T20:00Z,Ivory Coast at Curaçao,group-stage,E,"FIFA World Cup, Group E",STATUS_SCHEDULED,Scheduled,False,11678,Curaçao,CUW,0,WLLLD,4789,Ivory Coast,CIV,0,WWWLW
+760468,2026-06-25T20:00Z,Germany at Ecuador,group-stage,E,"FIFA World Cup, Group E",STATUS_SCHEDULED,Scheduled,False,209,Ecuador,ECU,0,WWDDW,481,Germany,GER,0,WWWWW
+760471,2026-06-25T23:00Z,Sweden at Japan,group-stage,F,"FIFA World Cup, Group F",STATUS_SCHEDULED,Scheduled,False,627,Japan,JPN,0,WWWWW,466,Sweden,SWE,0,DLWWD
+760472,2026-06-25T23:00Z,Netherlands at Tunisia,group-stage,F,"FIFA World Cup, Group F",STATUS_SCHEDULED,Scheduled,False,659,Tunisia,TUN,0,LLDWL,449,Netherlands,NED,0,WLDWW
+760469,2026-06-26T02:00Z,Australia at Paraguay,group-stage,D,"FIFA World Cup, Group D",STATUS_SCHEDULED,Scheduled,False,210,Paraguay,PAR,0,LWLWW,628,Australia,AUS,0,DLWWL
+760470,2026-06-26T02:00Z,United States at Türkiye,group-stage,D,"FIFA World Cup, Group D",STATUS_SCHEDULED,Scheduled,False,465,Türkiye,TUR,0,WWWWD,660,United States,USA,0,WLWLL
+760475,2026-06-26T19:00Z,France at Norway,group-stage,I,"FIFA World Cup, Group I",STATUS_SCHEDULED,Scheduled,False,464,Norway,NOR,0,DWDLW,478,France,FRA,0,WLWWW
+760474,2026-06-26T19:00Z,Iraq at Senegal,group-stage,I,"FIFA World Cup, Group I",STATUS_SCHEDULED,Scheduled,False,654,Senegal,SEN,0,DLWWW,4375,Iraq,IRQ,0,LDWWW
+760478,2026-06-27T00:00Z,Saudi Arabia at Cape Verde,group-stage,H,"FIFA World Cup, Group H",STATUS_SCHEDULED,Scheduled,False,2597,Cape Verde,CPV,0,WWLLL,655,Saudi Arabia,KSA,0,DWLLL
+760479,2026-06-27T00:00Z,Spain at Uruguay,group-stage,H,"FIFA World Cup, Group H",STATUS_SCHEDULED,Scheduled,False,212,Uruguay,URU,0,DDLDW,164,Spain,ESP,0,WDDWD
+760476,2026-06-27T03:00Z,Iran at Egypt,group-stage,G,"FIFA World Cup, Group G",STATUS_SCHEDULED,Scheduled,False,2620,Egypt,EGY,0,LWDWL,469,Iran,IRN,0,WWWLL
+760477,2026-06-27T03:00Z,Belgium at New Zealand,group-stage,G,"FIFA World Cup, Group G",STATUS_SCHEDULED,Scheduled,False,2666,New Zealand,NZL,0,LLWLL,459,Belgium,BEL,0,WWDWW
+760480,2026-06-27T21:00Z,Ghana at Croatia,group-stage,L,"FIFA World Cup, Group L",STATUS_SCHEDULED,Scheduled,False,477,Croatia,CRO,0,WLLWW,4469,Ghana,GHA,0,DLLLL
+760485,2026-06-27T21:00Z,England at Panama,group-stage,L,"FIFA World Cup, Group L",STATUS_SCHEDULED,Scheduled,False,2659,Panama,PAN,0,DWLWD,448,England,ENG,0,WWLDW
+760481,2026-06-27T23:30Z,Portugal at Colombia,group-stage,K,"FIFA World Cup, Group K",STATUS_SCHEDULED,Scheduled,False,208,Colombia,COL,0,WWLLW,482,Portugal,POR,0,WWWDW
+760482,2026-06-27T23:30Z,Uzbekistan at Congo DR,group-stage,K,"FIFA World Cup, Group K",STATUS_SCHEDULED,Scheduled,False,2850,Congo DR,COD,0,LDWWL,2570,Uzbekistan,UZB,0,LLWWD
+760484,2026-06-28T02:00Z,Austria at Algeria,group-stage,J,"FIFA World Cup, Group J",STATUS_SCHEDULED,Scheduled,False,624,Algeria,ALG,0,WWDWL,474,Austria,AUT,0,WWWDW
+760483,2026-06-28T02:00Z,Argentina at Jordan,group-stage,J,"FIFA World Cup, Group J",STATUS_SCHEDULED,Scheduled,False,2917,Jordan,JOR,0,LLDDD,202,Argentina,ARG,0,WWWWW
+760486,2026-06-28T19:00Z,Group B 2nd Place at Group A 2nd Place,round-of-32,,FIFA World Cup,STATUS_SCHEDULED,Scheduled,False,5926,Group A 2nd Place,2A,0,,5924,Group B 2nd Place,2B,0,
+760487,2026-06-29T17:00Z,Group F 2nd Place at Group C Winner,round-of-32,,FIFA World Cup,STATUS_SCHEDULED,Scheduled,False,5927,Group C Winner,1C,0,,5934,Group F 2nd Place,2F,0,
+760489,2026-06-29T20:30Z,Third Place Group A/B/C/D/F at Group E Winner,round-of-32,,FIFA World Cup,STATUS_SCHEDULED,Scheduled,False,5931,Group E Winner,1E,0,,131541,Third Place Group A/B/C/D/F,3RD,0,
+760488,2026-06-30T01:00Z,Group C 2nd Place at Group F Winner,round-of-32,,FIFA World Cup,STATUS_SCHEDULED,Scheduled,False,5933,Group F Winner,1F,0,,5930,Group C 2nd Place,2C,0,
+760490,2026-06-30T17:00Z,Group I 2nd Place at Group E 2nd Place,round-of-32,,FIFA World Cup,STATUS_SCHEDULED,Scheduled,False,5932,Group E 2nd Place,2E,0,,131501,Group I 2nd Place,2I,0,
+760492,2026-06-30T21:00Z,Third Place Group C/D/F/G/H at Group I Winner,round-of-32,,FIFA World Cup,STATUS_SCHEDULED,Scheduled,False,131505,Group I Winner,1I,0,,131544,Third Place Group C/D/F/G/H,3RD,0,
+760491,2026-07-01T01:00Z,Third Place Group C/E/F/H/I at Group A Winner,round-of-32,,FIFA World Cup,STATUS_SCHEDULED,Scheduled,False,5923,Group A Winner,1A,0,,131545,Third Place Group C/E/F/H/I,3RD,0,
+760495,2026-07-01T16:00Z,Third Place Group E/H/I/J/K at Group L Winner,round-of-32,,FIFA World Cup,STATUS_SCHEDULED,Scheduled,False,131508,Group L Winner,1L,0,,131548,Third Place Group E/H/I/J/K,3RD,0,
+760493,2026-07-01T20:00Z,Third Place Group A/E/H/I/J at Group G Winner,round-of-32,,FIFA World Cup,STATUS_SCHEDULED,Scheduled,False,5935,Group G Winner,1G,0,,131542,Third Place Group A/E/H/I/J,3RD,0,
+760494,2026-07-02T00:00Z,Third Place Group B/E/F/I/J at Group D Winner,round-of-32,,FIFA World Cup,STATUS_SCHEDULED,Scheduled,False,5929,Group D Winner,1D,0,,131543,Third Place Group B/E/F/I/J,3RD,0,
+760497,2026-07-02T19:00Z,Group J 2nd Place at Group H Winner,round-of-32,,FIFA World Cup,STATUS_SCHEDULED,Scheduled,False,5937,Group H Winner,1H,0,,131502,Group J 2nd Place,2J,0,
+760496,2026-07-02T23:00Z,Group L 2nd Place at Group K 2nd Place,round-of-32,,FIFA World Cup,STATUS_SCHEDULED,Scheduled,False,131503,Group K 2nd Place,2K,0,,131504,Group L 2nd Place,2L,0,
+760498,2026-07-03T03:00Z,Third Place Group E/F/G/I/J at Group B Winner,round-of-32,,FIFA World Cup,STATUS_SCHEDULED,Scheduled,False,5925,Group B Winner,1B,0,,131547,Third Place Group E/F/G/I/J,3RD,0,
+760499,2026-07-03T18:00Z,Group G 2nd Place at Group D 2nd Place,round-of-32,,FIFA World Cup,STATUS_SCHEDULED,Scheduled,False,5928,Group D 2nd Place,2D,0,,5936,Group G 2nd Place,2G,0,
+760500,2026-07-03T22:00Z,Group H 2nd Place at Group J Winner,round-of-32,,FIFA World Cup,STATUS_SCHEDULED,Scheduled,False,131506,Group J Winner,1J,0,,5938,Group H 2nd Place,2H,0,
+760501,2026-07-04T01:30Z,Third Place Group D/E/I/J/L at Group K Winner,round-of-32,,FIFA World Cup,STATUS_SCHEDULED,Scheduled,False,131507,Group K Winner,1K,0,,131546,Third Place Group D/E/I/J/L,3RD,0,
+760502,2026-07-04T17:00Z,Round of 32 3 Winner at Round of 32 1 Winner,round-of-16,,FIFA World Cup,STATUS_SCHEDULED,Scheduled,False,131525,Round of 32 1 Winner,RD32,0,,131527,Round of 32 3 Winner,RD32,0,
+760503,2026-07-04T21:00Z,Round of 32 5 Winner at Round of 32 2 Winner,round-of-16,,FIFA World Cup,STATUS_SCHEDULED,Scheduled,False,131526,Round of 32 2 Winner,RD32,0,,131529,Round of 32 5 Winner,RD32,0,
+760504,2026-07-05T20:00Z,Round of 32 6 Winner at Round of 32 4 Winner,round-of-16,,FIFA World Cup,STATUS_SCHEDULED,Scheduled,False,131528,Round of 32 4 Winner,RD32,0,,131530,Round of 32 6 Winner,RD32,0,
+760505,2026-07-06T00:00Z,Round of 32 8 Winner at Round of 32 7 Winner,round-of-16,,FIFA World Cup,STATUS_SCHEDULED,Scheduled,False,131531,Round of 32 7 Winner,RD32,0,,131532,Round of 32 8 Winner,RD32,0,
+760506,2026-07-06T19:00Z,Round of 32 12 Winner at Round of 32 11 Winner,round-of-16,,FIFA World Cup,STATUS_SCHEDULED,Scheduled,False,131535,Round of 32 11 Winner,RD32,0,,131536,Round of 32 12 Winner,RD32,0,
+760507,2026-07-07T00:00Z,Round of 32 10 Winner at Round of 32 9 Winner,round-of-16,,FIFA World Cup,STATUS_SCHEDULED,Scheduled,False,131533,Round of 32 9 Winner,RD32,0,,131534,Round of 32 10 Winner,RD32,0,
+760509,2026-07-07T16:00Z,Round of 32 16 Winner at Round of 32 14 Winner,round-of-16,,FIFA World Cup,STATUS_SCHEDULED,Scheduled,False,131538,Round of 32 14 Winner,RD32,0,,131540,Round of 32 16 Winner,RD32,0,
+760508,2026-07-07T20:00Z,Round of 32 15 Winner at Round of 32 13 Winner,round-of-16,,FIFA World Cup,STATUS_SCHEDULED,Scheduled,False,131537,Round of 32 13 Winner,RD32,0,,131539,Round of 32 15 Winner,RD32,0,
+760510,2026-07-09T20:00Z,Round of 16 2 Winner at Round of 16 1 Winner,quarterfinals,,FIFA World Cup,STATUS_SCHEDULED,Scheduled,False,19282,Round of 16 1 Winner,RD16 W1,0,,19283,Round of 16 2 Winner,RD16 W2,0,
+760511,2026-07-10T19:00Z,Round of 16 6 Winner at Round of 16 5 Winner,quarterfinals,,FIFA World Cup,STATUS_SCHEDULED,Scheduled,False,19278,Round of 16 5 Winner,RD16 W5,0,,19279,Round of 16 6 Winner,RD16 W6,0,
+760512,2026-07-11T21:00Z,Round of 16 4 Winner at Round of 16 3 Winner,quarterfinals,,FIFA World Cup,STATUS_SCHEDULED,Scheduled,False,19284,Round of 16 3 Winner,RD16 W3,0,,19285,Round of 16 4 Winner,RD16 W4,0,
+760513,2026-07-12T01:00Z,Round of 16 8 Winner at Round of 16 7 Winner,quarterfinals,,FIFA World Cup,STATUS_SCHEDULED,Scheduled,False,19280,Round of 16 7 Winner,RD16 W7,0,,19281,Round of 16 8 Winner,RD16 W8,0,
+760514,2026-07-14T19:00Z,Quarterfinal 2 Winner at Quarterfinal 1 Winner,semifinals,,FIFA World Cup,STATUS_SCHEDULED,Scheduled,False,17631,Quarterfinal 1 Winner,QFW1,0,,17629,Quarterfinal 2 Winner,QFW2,0,
+760515,2026-07-15T19:00Z,Quarterfinal 4 Winner at Quarterfinal 3 Winner,semifinals,,FIFA World Cup,STATUS_SCHEDULED,Scheduled,False,17630,Quarterfinal 3 Winner,QFW3,0,,17632,Quarterfinal 4 Winner,QW4,0,
+760516,2026-07-18T21:00Z,Semifinal 2 Loser at Semifinal 1 Loser,3rd-place-match,,FIFA World Cup,STATUS_SCHEDULED,Scheduled,False,5958,Semifinal 1 Loser,SF L1,0,,5959,Semifinal 2 Loser,SF L2,0,
+760517,2026-07-19T19:00Z,Semifinal 2 Winner at Semifinal 1 Winner,final,,FIFA World Cup,STATUS_SCHEDULED,Scheduled,False,5960,Semifinal 1 Winner,SFW1,0,,5961,Semifinal 2 Winner,SFW2,0,
