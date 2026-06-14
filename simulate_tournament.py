@@ -9,7 +9,7 @@ RATINGS_PATH = Path("data/processed/team_ratings.csv")
 FORECAST_OUT_PATH = Path("data/processed/tournament_forecast.csv")
 BRACKET_OUT_PATH = Path("data/processed/bracket_forecast.csv")
 
-N_SIMS = 1000
+N_SIMS = 10000
 RANDOM_SEED = 42
 
 

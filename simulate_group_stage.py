@@ -9,7 +9,7 @@ RATINGS_PATH = Path("data/processed/team_ratings.csv")
 OUT_DIR = Path("data/processed")
 OUT_DIR.mkdir(parents=True, exist_ok=True)
 
-N_SIMS = 1000
+N_SIMS = 10000
 RANDOM_SEED = 42
 
 
