@@ -6,9 +6,10 @@ import pandas as pd
 
 MATCHES_PATH = Path("data/processed/matches.csv")
 RATINGS_PATH = Path("data/processed/team_ratings.csv")
-OUT_PATH = Path("data/processed/tournament_forecast.csv")
+FORECAST_OUT_PATH = Path("data/processed/tournament_forecast.csv")
+BRACKET_OUT_PATH = Path("data/processed/bracket_forecast.csv")
 
-N_SIMS = 10000
+N_SIMS = 1000
 RANDOM_SEED = 42
 
 
@@ -38,7 +39,6 @@ def simulate_score(result, rng):
     margin = rng.choice([1, 2, 3, 4], p=[0.62, 0.25, 0.10, 0.03])
     loser = rng.choice([0, 1, 2], p=[0.55, 0.35, 0.10])
     winner = loser + margin
-
     return (winner, loser) if result == "home" else (loser, winner)
 
 
@@ -89,12 +89,10 @@ def apply_match(table, home, away, hg, ag):
 def rank_table(table, rng):
     df = pd.DataFrame(table.values())
     df["random_tiebreaker"] = rng.random(len(df))
-
     df = df.sort_values(
         ["points", "gd", "gf", "random_tiebreaker"],
         ascending=[False, False, False, False],
     ).reset_index(drop=True)
-
     df["place"] = np.arange(1, len(df) + 1)
     return df
 
@@ -118,11 +116,7 @@ def simulate_group_stage(group_matches, ratings, rng):
                 rh = ratings.get(home, 1500)
                 ra = ratings.get(away, 1500)
                 p_home, p_draw, p_away = wdl_probs(rh, ra)
-
-                result = rng.choice(
-                    ["home", "draw", "away"],
-                    p=[p_home, p_draw, p_away],
-                )
+                result = rng.choice(["home", "draw", "away"], p=[p_home, p_draw, p_away])
                 hg, ag = simulate_score(result, rng)
 
             apply_match(table, home, away, hg, ag)
@@ -136,7 +130,6 @@ def simulate_group_stage(group_matches, ratings, rng):
 
     third_df = pd.concat(third_rows, ignore_index=True)
     third_df["random_tiebreaker"] = rng.random(len(third_df))
-
     third_df = third_df.sort_values(
         ["points", "gd", "gf", "random_tiebreaker"],
         ascending=[False, False, False, False],
@@ -167,21 +160,27 @@ def resolve_placeholder(name, slots, third_by_group):
     match = re.match(r"Third Place Group ([A-L/]+)", name)
     if match:
         allowed_groups = match.group(1).split("/")
-        candidates = [
-            third_by_group[group]
-            for group in allowed_groups
-            if group in third_by_group
-        ]
-
-        if not candidates:
-            return None
-
-        return candidates[0]
+        candidates = [third_by_group[g] for g in allowed_groups if g in third_by_group]
+        return candidates[0] if candidates else None
 
     return name
 
 
-def simulate_stage(stage_matches, source_winners, output_prefix, counters_key, counters, ratings, rng):
+def add_bracket_count(bracket_counts, slot, team):
+    bracket_counts.setdefault(slot, {})
+    bracket_counts[slot][team] = bracket_counts[slot].get(team, 0) + 1
+
+
+def simulate_stage(
+    stage_matches,
+    source_winners,
+    output_prefix,
+    counters_key,
+    counters,
+    ratings,
+    rng,
+    bracket_counts,
+):
     winners = {}
     stage_matches = stage_matches.sort_values("date_utc").reset_index(drop=True)
 
@@ -195,9 +194,11 @@ def simulate_stage(stage_matches, source_winners, output_prefix, counters_key, c
             continue
 
         winner = simulate_knockout_winner(home, away, ratings, rng)
+        slot = f"{output_prefix} {match_num} Winner"
 
-        winners[f"{output_prefix} {match_num} Winner"] = winner
+        winners[slot] = winner
         counters[winner][counters_key] += 1
+        add_bracket_count(bracket_counts, slot, winner)
 
     return winners
 
@@ -242,6 +243,8 @@ def main():
         for team in all_teams
     }
 
+    bracket_counts = {}
+
     for _ in range(N_SIMS):
         group_results, slots, third_by_group = simulate_group_stage(
             group_matches,
@@ -278,8 +281,11 @@ def main():
                 continue
 
             winner = simulate_knockout_winner(home, away, ratings, rng)
-            r32_winners[f"Round of 32 {match_num} Winner"] = winner
+            slot = f"Round of 32 {match_num} Winner"
+
+            r32_winners[slot] = winner
             counters[winner]["round_16"] += 1
+            add_bracket_count(bracket_counts, slot, winner)
 
         r16 = knockout_matches[knockout_matches["season_slug"] == "round-of-16"].copy()
         r16_winners = simulate_stage(
@@ -290,6 +296,7 @@ def main():
             counters,
             ratings,
             rng,
+            bracket_counts,
         )
 
         qf = knockout_matches[knockout_matches["season_slug"] == "quarterfinals"].copy()
@@ -301,6 +308,7 @@ def main():
             counters,
             ratings,
             rng,
+            bracket_counts,
         )
 
         sf = knockout_matches[knockout_matches["season_slug"] == "semifinals"].copy()
@@ -312,19 +320,20 @@ def main():
             counters,
             ratings,
             rng,
+            bracket_counts,
         )
 
         final = knockout_matches[knockout_matches["season_slug"] == "final"].copy()
 
         if not final.empty:
             row = final.sort_values("date_utc").iloc[0]
-
             home = sf_winners.get(row["home_team"])
             away = sf_winners.get(row["away_team"])
 
             if home is not None and away is not None:
                 champion = simulate_knockout_winner(home, away, ratings, rng)
                 counters[champion]["champion"] += 1
+                add_bracket_count(bracket_counts, "Champion", champion)
 
     rows = []
 
@@ -345,11 +354,32 @@ def main():
             }
         )
 
-    out = pd.DataFrame(rows).sort_values("champion_pct", ascending=False)
-    out.to_csv(OUT_PATH, index=False)
+    forecast_df = pd.DataFrame(rows).sort_values("champion_pct", ascending=False)
+    forecast_df.to_csv(FORECAST_OUT_PATH, index=False)
 
-    print(f"Saved {OUT_PATH}")
-    print(out.head(30).to_string(index=False))
+    bracket_rows = []
+
+    for slot, team_counts in bracket_counts.items():
+        total = sum(team_counts.values())
+
+        for team, count in team_counts.items():
+            bracket_rows.append(
+                {
+                    "slot": slot,
+                    "team": team,
+                    "probability": count / total,
+                    "count": count,
+                    "total": total,
+                }
+            )
+
+    bracket_df = pd.DataFrame(bracket_rows)
+    bracket_df = bracket_df.sort_values(["slot", "probability"], ascending=[True, False])
+    bracket_df.to_csv(BRACKET_OUT_PATH, index=False)
+
+    print(f"Saved {FORECAST_OUT_PATH}")
+    print(f"Saved {BRACKET_OUT_PATH}")
+    print(forecast_df.head(30).to_string(index=False))
 
 
 if __name__ == "__main__":
