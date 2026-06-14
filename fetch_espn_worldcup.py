@@ -7,8 +7,11 @@ import requests
 BASE_URL = "https://site.api.espn.com/apis/site/v2/sports/soccer/fifa.world/scoreboard"
 DATE_RANGE = "20260611-20260719"
 
-DATA_DIR = Path("data/raw")
-DATA_DIR.mkdir(parents=True, exist_ok=True)
+RAW_DIR = Path("data/raw")
+PROCESSED_DIR = Path("data/processed")
+
+RAW_DIR.mkdir(parents=True, exist_ok=True)
+PROCESSED_DIR.mkdir(parents=True, exist_ok=True)
 
 
 def fetch_espn_world_cup():
@@ -25,18 +28,34 @@ def fetch_espn_world_cup():
 
 
 def save_json(filename, payload):
+    fetched_at_utc = datetime.now(timezone.utc).isoformat()
+
     output = {
-        "fetched_at_utc": datetime.now(timezone.utc).isoformat(),
+        "fetched_at_utc": fetched_at_utc,
         "source": "espn_public_scoreboard",
         "data": payload,
     }
 
-    path = DATA_DIR / filename
+    raw_path = RAW_DIR / filename
 
-    with open(path, "w") as f:
+    with open(raw_path, "w") as f:
         json.dump(output, f, indent=2)
 
-    print(f"Saved {path}")
+    print(f"Saved {raw_path}")
+
+    metadata_path = PROCESSED_DIR / "metadata.json"
+
+    with open(metadata_path, "w") as f:
+        json.dump(
+            {
+                "last_updated_utc": fetched_at_utc,
+                "source": "espn_public_scoreboard",
+            },
+            f,
+            indent=2,
+        )
+
+    print(f"Saved {metadata_path}")
 
 
 def summarize_events(payload):
@@ -64,74 +83,10 @@ def summarize_events(payload):
         print(f"{event_id} | {date} | {name} | {status} | {' vs '.join(teams)}")
 
 
-def inspect_forecast_variables(payload):
-    events = payload.get("events", [])
-
-    if not events:
-        print("\nNo events found to inspect.")
-        return
-
-    first_event = events[0]
-
-    print("\nTop-level event keys:")
-    print(list(first_event.keys()))
-
-    competitions = first_event.get("competitions", [])
-    competition = competitions[0] if competitions else {}
-    
-    print("\nODDS OBJECT:")
-    print(json.dumps(competition.get("odds"), indent=2))
-    print("\nCompetition keys:")
-    print(list(competition.keys()))
-
-    possible_forecast_keys = [
-        "odds",
-        "predictor",
-        "probabilities",
-        "probability",
-        "winProbability",
-        "pickcenter",
-        "againstTheSpread",
-    ]
-
-    print("\nSearching for forecast/odds-like keys...")
-
-    found = []
-
-    def recursive_find(obj, path=""):
-        if isinstance(obj, dict):
-            for key, value in obj.items():
-                current_path = f"{path}.{key}" if path else key
-
-                if key in possible_forecast_keys:
-                    found.append(current_path)
-
-                recursive_find(value, current_path)
-
-        elif isinstance(obj, list):
-            for i, item in enumerate(obj):
-                recursive_find(item, f"{path}[{i}]")
-
-    recursive_find(first_event)
-
-    if found:
-        print("Found possible forecast/odds fields:")
-        for item in found:
-            print(f"- {item}")
-    else:
-        print("No obvious odds/probability fields found in first event.")
-
-    print("\nFirst event preview:")
-    print(json.dumps(first_event, indent=2)[:15000])
-
-
 def main():
     payload = fetch_espn_world_cup()
-
     save_json("espn_2026_scoreboard.json", payload)
     summarize_events(payload)
-    inspect_forecast_variables(payload)
-
     print("\nDone.")
 
 

@@ -32,5 +32,6 @@ jobs:
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
           git add data/processed/*.csv
+          git add data/processed/*.json
           git commit -m "Update World Cup forecast" || echo "No changes to commit"
           git push

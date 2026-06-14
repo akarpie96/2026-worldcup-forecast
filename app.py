@@ -7,7 +7,7 @@ import streamlit as st
 FORECAST_PATH = Path("data/processed/tournament_forecast.csv")
 MATCHES_PATH = Path("data/processed/matches.csv")
 TEAMS_PATH = Path("data/processed/teams.csv")
-RAW_PATH = Path("data/raw/espn_2026_scoreboard.json")
+METADATA_PATH = Path("data/processed/metadata.json")
 
 
 def pct(x):
@@ -16,9 +16,9 @@ def pct(x):
 
 def get_last_updated():
     try:
-        with open(RAW_PATH, "r") as f:
-            raw = json.load(f)
-        return raw.get("fetched_at_utc", "Unknown")
+        with open(METADATA_PATH, "r") as f:
+            metadata = json.load(f)
+        return metadata.get("last_updated_utc", "Unknown")
     except FileNotFoundError:
         return "Unknown"
 
