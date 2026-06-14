@@ -7,6 +7,7 @@ import streamlit as st
 FORECAST_PATH = Path("data/processed/tournament_forecast.csv")
 MATCHES_PATH = Path("data/processed/matches.csv")
 TEAMS_PATH = Path("data/processed/teams.csv")
+BRACKET_PATH = Path("data/processed/bracket_forecast.csv")
 METADATA_PATH = Path("data/processed/metadata.json")
 
 
@@ -29,7 +30,6 @@ def team_logo(team, logo_map):
 
 def team_html(team, logo_map, size=26):
     logo = team_logo(team, logo_map)
-
     if logo:
         return (
             f'<div style="display:flex; align-items:center; gap:8px;">'
@@ -37,7 +37,6 @@ def team_html(team, logo_map, size=26):
             f'<span>{team}</span>'
             f'</div>'
         )
-
     return str(team)
 
 
@@ -55,6 +54,14 @@ def percent_bar(value, label=None):
         f'<div style="min-width:48px; text-align:right; font-weight:700;">{text}</div>'
         f'</div>'
     )
+
+
+def slot_stage(slot):
+    stage_order = ["Round of 32", "Round of 16", "Quarterfinal", "Semifinal", "Champion"]
+    for stage in stage_order:
+        if str(slot).startswith(stage):
+            return stage
+    return "Other"
 
 
 st.set_page_config(
@@ -119,6 +126,7 @@ st.markdown(
 forecast = pd.read_csv(FORECAST_PATH)
 matches = pd.read_csv(MATCHES_PATH)
 teams = pd.read_csv(TEAMS_PATH)
+bracket = pd.read_csv(BRACKET_PATH)
 last_updated = get_last_updated()
 
 logo_map = dict(zip(teams["team"], teams["logo"]))
@@ -178,7 +186,9 @@ st.bar_chart(
 
 st.divider()
 
-tab1, tab2, tab3 = st.tabs(["Tournament odds", "Groups", "Matches"])
+tab1, tab2, tab3, tab4 = st.tabs(
+    ["Tournament odds", "Groups", "Matches", "Live Bracket"]
+)
 
 with tab1:
     st.subheader("Full tournament forecast")
@@ -311,3 +321,55 @@ with tab3:
         match_table.to_html(escape=False, index=False),
         unsafe_allow_html=True,
     )
+
+with tab4:
+    st.subheader("Live Bracket Forecast")
+    st.caption(
+        "Projected most likely teams for each knockout-round slot based on current simulations."
+    )
+
+    stage_order = [
+        "Round of 32",
+        "Round of 16",
+        "Quarterfinal",
+        "Semifinal",
+        "Champion",
+    ]
+
+    bracket["stage"] = bracket["slot"].apply(slot_stage)
+
+    selected_stage = st.selectbox(
+        "Select bracket stage",
+        stage_order,
+        index=0,
+    )
+
+    stage_bracket = bracket[bracket["stage"] == selected_stage].copy()
+
+    if stage_bracket.empty:
+        st.info("No bracket projections available for this stage yet.")
+    else:
+        slots = sorted(stage_bracket["slot"].unique())
+
+        for slot in slots:
+            st.markdown(f"### {slot}")
+
+            slot_df = stage_bracket[stage_bracket["slot"] == slot].copy()
+            slot_df = slot_df.sort_values("probability", ascending=False).head(5)
+
+            for _, row in slot_df.iterrows():
+                left, right = st.columns([2, 3])
+
+                with left:
+                    st.markdown(
+                        team_html(row["team"], logo_map, size=30),
+                        unsafe_allow_html=True,
+                    )
+
+                with right:
+                    st.markdown(
+                        percent_bar(row["probability"], label=pct(row["probability"])),
+                        unsafe_allow_html=True,
+                    )
+
+            st.divider()
