@@ -183,7 +183,6 @@ def resolve_placeholder(name, slots, third_by_group):
 
 def simulate_stage(stage_matches, source_winners, output_prefix, counters_key, counters, ratings, rng):
     winners = {}
-
     stage_matches = stage_matches.sort_values("date_utc").reset_index(drop=True)
 
     for i, row in stage_matches.iterrows():
@@ -232,6 +231,7 @@ def main():
     counters = {
         team: {
             "sims": 0,
+            "win_group": 0,
             "advance": 0,
             "round_16": 0,
             "quarterfinal": 0,
@@ -254,14 +254,14 @@ def main():
                 team = row["team"]
                 counters[team]["sims"] += 1
 
-                if row["place"] in [1, 2]:
+                if row["place"] == 1:
+                    counters[team]["win_group"] += 1
+                    counters[team]["advance"] += 1
+                elif row["place"] == 2:
                     counters[team]["advance"] += 1
 
         for team in third_by_group.values():
             counters[team]["advance"] += 1
-
-        # Round of 32
-        r32_source = {}
 
         r32 = knockout_matches[knockout_matches["season_slug"] == "round-of-32"].copy()
         r32 = r32.sort_values("date_utc").reset_index(drop=True)
@@ -281,7 +281,6 @@ def main():
             r32_winners[f"Round of 32 {match_num} Winner"] = winner
             counters[winner]["round_16"] += 1
 
-        # Round of 16
         r16 = knockout_matches[knockout_matches["season_slug"] == "round-of-16"].copy()
         r16_winners = simulate_stage(
             r16,
@@ -293,7 +292,6 @@ def main():
             rng,
         )
 
-        # Quarterfinals
         qf = knockout_matches[knockout_matches["season_slug"] == "quarterfinals"].copy()
         qf_winners = simulate_stage(
             qf,
@@ -305,7 +303,6 @@ def main():
             rng,
         )
 
-        # Semifinals
         sf = knockout_matches[knockout_matches["season_slug"] == "semifinals"].copy()
         sf_winners = simulate_stage(
             sf,
@@ -317,7 +314,6 @@ def main():
             rng,
         )
 
-        # Final
         final = knockout_matches[knockout_matches["season_slug"] == "final"].copy()
 
         if not final.empty:
@@ -339,6 +335,7 @@ def main():
             {
                 "team": team,
                 "sims": sims,
+                "win_group_pct": c["win_group"] / sims,
                 "advance_pct": c["advance"] / sims,
                 "round_16_pct": c["round_16"] / sims,
                 "quarterfinal_pct": c["quarterfinal"] / sims,
