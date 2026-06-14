@@ -191,6 +191,7 @@ with tab1:
         html_rows.append(
             {
                 "Team": team_html(row["team"], logo_map),
+                "Win Group": percent_bar(row["win_group_pct"]),
                 "Advance": percent_bar(row["advance_pct"]),
                 "Round of 16": pct(row["round_16_pct"]),
                 "Quarterfinal": pct(row["quarterfinal_pct"]),
@@ -215,7 +216,10 @@ with tab2:
 
     group_teams = teams[teams["group"] == selected_group]["team"].tolist()
     group_forecast = forecast[forecast["team"].isin(group_teams)].copy()
-    group_forecast = group_forecast.sort_values("advance_pct", ascending=False)
+    group_forecast = group_forecast.sort_values(
+        ["win_group_pct", "advance_pct"],
+        ascending=False,
+    )
 
     st.markdown(f"### Group {selected_group}")
 
@@ -229,6 +233,13 @@ with tab2:
             )
 
         with right:
+            st.markdown("**Win Group**")
+            st.markdown(
+                percent_bar(row["win_group_pct"], label=pct(row["win_group_pct"])),
+                unsafe_allow_html=True,
+            )
+
+            st.markdown("**Advance**")
             st.markdown(
                 percent_bar(row["advance_pct"], label=pct(row["advance_pct"])),
                 unsafe_allow_html=True,
@@ -242,6 +253,7 @@ with tab2:
         group_rows.append(
             {
                 "Team": team_html(row["team"], logo_map),
+                "Win Group": percent_bar(row["win_group_pct"]),
                 "Advance": percent_bar(row["advance_pct"]),
                 "Round of 16": pct(row["round_16_pct"]),
                 "Quarterfinal": pct(row["quarterfinal_pct"]),
