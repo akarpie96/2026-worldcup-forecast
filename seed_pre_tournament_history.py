@@ -50,7 +50,11 @@ def main():
         keep="last",
     )
 
-    combined["timestamp_sort"] = pd.to_datetime(combined["timestamp_utc"], utc=True)
+    combined["timestamp_sort"] = pd.to_datetime(
+    combined["timestamp_utc"],
+    utc=True,
+    format="mixed",
+    )   
     combined = combined.sort_values(["timestamp_sort", "team"])
     combined = combined.drop(columns=["timestamp_sort"])
 
