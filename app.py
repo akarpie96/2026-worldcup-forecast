@@ -9,6 +9,7 @@ FORECAST_PATH = Path("data/processed/tournament_forecast.csv")
 MATCHES_PATH = Path("data/processed/matches.csv")
 TEAMS_PATH = Path("data/processed/teams.csv")
 BRACKET_PATH = Path("data/processed/bracket_forecast.csv")
+FORECAST_HISTORY_PATH = Path("data/processed/forecast_history.csv")
 METADATA_PATH = Path("data/processed/metadata.json")
 
 
@@ -240,8 +241,13 @@ forecast = pd.read_csv(FORECAST_PATH)
 matches = pd.read_csv(MATCHES_PATH)
 teams = pd.read_csv(TEAMS_PATH)
 bracket = pd.read_csv(BRACKET_PATH)
-last_updated = get_last_updated()
 
+if FORECAST_HISTORY_PATH.exists():
+    history = pd.read_csv(FORECAST_HISTORY_PATH)
+else:
+    history = pd.DataFrame()
+
+last_updated = get_last_updated()
 logo_map = dict(zip(teams["team"], teams["logo"]))
 
 forecast = forecast.merge(
@@ -299,8 +305,8 @@ st.bar_chart(
 
 st.divider()
 
-tab1, tab2, tab3, tab4 = st.tabs(
-    ["Tournament odds", "Groups", "Matches", "Live Bracket"]
+tab1, tab2, tab3, tab4, tab5 = st.tabs(
+    ["Tournament odds", "Groups", "Matches", "Live Bracket", "Movement"]
 )
 
 with tab1:
@@ -472,3 +478,72 @@ with tab4:
 
                 slot_df = stage_df[stage_df["slot"] == slot]
                 render_bracket_slot(slot, slot_df, logo_map, max_teams=3)
+
+with tab5:
+    st.subheader("Forecast Movement")
+    st.caption("Historical probability movement from saved forecast snapshots.")
+
+    if history.empty:
+        st.info("No forecast history has been recorded yet.")
+    else:
+        history = history.copy()
+        history["timestamp"] = pd.to_datetime(history["timestamp_utc"], utc=True)
+
+        history["timestamp_display"] = (
+            history["timestamp"]
+            .dt.tz_convert("America/Los_Angeles")
+            .dt.strftime("%b %d %I:%M %p")
+        )
+
+        metric_options = {
+            "Win Group": "win_group_pct",
+            "Advance": "advance_pct",
+            "Round of 16": "round_16_pct",
+            "Quarterfinal": "quarterfinal_pct",
+            "Semifinal": "semifinal_pct",
+            "Final": "final_pct",
+            "Champion": "champion_pct",
+        }
+
+        selected_team = st.selectbox(
+            "Team",
+            sorted(history["team"].dropna().unique()),
+        )
+
+        selected_metric_label = st.selectbox(
+            "Metric",
+            list(metric_options.keys()),
+            index=1,
+        )
+
+        selected_metric = metric_options[selected_metric_label]
+
+        team_history = history[history["team"] == selected_team].copy()
+        team_history = team_history.sort_values("timestamp")
+
+        team_history["value_pct"] = team_history[selected_metric] * 100
+
+        latest_value = team_history["value_pct"].iloc[-1]
+        first_value = team_history["value_pct"].iloc[0]
+        change = latest_value - first_value
+
+        c1, c2, c3 = st.columns(3)
+        c1.metric("Current", f"{latest_value:.1f}%")
+        c2.metric("Change since first snapshot", f"{change:+.1f} pts")
+        c3.metric("Snapshots", f"{len(team_history)}")
+
+        chart_data = team_history.set_index("timestamp_display")["value_pct"]
+        st.line_chart(chart_data, height=360)
+
+        st.markdown("#### Recent snapshots")
+
+        recent = team_history.sort_values("timestamp", ascending=False).head(10).copy()
+        recent["Probability"] = recent["value_pct"].map(lambda x: f"{x:.1f}%")
+
+        st.dataframe(
+            recent[["timestamp_display", "Probability"]].rename(
+                columns={"timestamp_display": "Time"}
+            ),
+            use_container_width=True,
+            hide_index=True,
+        )
