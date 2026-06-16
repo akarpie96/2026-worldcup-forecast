@@ -549,3 +549,91 @@ with tab5:
             use_container_width=True,
             hide_index=True,
         )
+
+        # ==========================
+        # Biggest Movers
+        # ==========================
+
+        st.markdown("#### Biggest movers since pre-tournament forecast")
+
+        metric_for_movers = selected_metric
+
+        pivot = history.pivot_table(
+            index="team",
+            columns="timestamp",
+            values=metric_for_movers,
+            aggfunc="last",
+        )
+
+        if pivot.shape[1] < 2:
+            st.info("Need at least two snapshots to calculate movers.")
+        else:
+            sorted_times = sorted(pivot.columns)
+
+            baseline_time = sorted_times[0]
+            latest_time = sorted_times[-1]
+
+            st.caption(
+                f"Comparing {baseline_time.strftime('%b %d %Y')} "
+                f"to the latest forecast."
+            )
+
+            movers = pivot[[baseline_time, latest_time]].dropna().copy()
+
+            movers["change_pts"] = (
+                movers[latest_time] - movers[baseline_time]
+            ) * 100
+
+            movers = movers.reset_index()
+
+            gainers = movers.sort_values(
+                "change_pts",
+                ascending=False
+            ).head(10)
+
+            losers = movers.sort_values(
+                "change_pts",
+                ascending=True
+            ).head(10)
+
+            left, right = st.columns(2)
+
+            with left:
+                st.markdown("##### Biggest gainers")
+
+                gainers_display = gainers.copy()
+
+                gainers_display["Change"] = gainers_display[
+                    "change_pts"
+                ].map(lambda x: f"{x:+.2f} pts")
+
+                st.dataframe(
+                    gainers_display[
+                        ["team", "Change"]
+                    ].rename(
+                        columns={"team": "Team"}
+                    ),
+                    use_container_width=True,
+                    hide_index=True,
+                )
+
+            with right:
+                st.markdown("##### Biggest decliners")
+
+                losers_display = losers.copy()
+
+                losers_display["Change"] = losers_display[
+                    "change_pts"
+                ].map(lambda x: f"{x:+.2f} pts")
+
+                st.dataframe(
+                    losers_display[
+                        ["team", "Change"]
+                    ].rename(
+                        columns={"team": "Team"}
+                    ),
+                    use_container_width=True,
+                    hide_index=True,
+                )
+
+        
