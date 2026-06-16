@@ -487,7 +487,9 @@ with tab5:
         st.info("No forecast history has been recorded yet.")
     else:
         history = history.copy()
-        history["timestamp"] = pd.to_datetime(history["timestamp_utc"], utc=True)
+        history["timestamp"] = history["timestamp_utc"].apply(
+            lambda x: pd.to_datetime(x, utc=True)
+        )
 
         history["timestamp_display"] = (
             history["timestamp"]
