@@ -1,4 +1,5 @@
 import json
+import re
 from pathlib import Path
 
 import pandas as pd
@@ -34,8 +35,8 @@ def team_html(team, logo_map, size=26):
         return (
             f'<div style="display:flex; align-items:center; gap:8px;">'
             f'<img src="{logo}" width="{size}" height="{size}" style="border-radius:50%;">'
-            f'<span>{team}</span>'
-            f'</div>'
+            f"<span>{team}</span>"
+            f"</div>"
         )
     return str(team)
 
@@ -50,9 +51,9 @@ def percent_bar(value, label=None):
         f'border-radius:999px; height:16px;">'
         f'<div style="width:{width:.1f}%; background:#2E86DE; '
         f'height:16px; border-radius:999px;"></div>'
-        f'</div>'
+        f"</div>"
         f'<div style="min-width:48px; text-align:right; font-weight:700;">{text}</div>'
-        f'</div>'
+        f"</div>"
     )
 
 
@@ -62,6 +63,67 @@ def slot_stage(slot):
         if str(slot).startswith(stage):
             return stage
     return "Other"
+
+
+def slot_number(slot):
+    nums = re.findall(r"\d+", str(slot))
+    return int(nums[-1]) if nums else 999
+
+
+def friendly_slot(slot):
+    if slot == "Champion":
+        return "Champion"
+
+    n = slot_number(slot)
+
+    if str(slot).startswith("Round of 32"):
+        return f"R32 Match {n}"
+    if str(slot).startswith("Round of 16"):
+        return f"R16 Match {n}"
+    if str(slot).startswith("Quarterfinal"):
+        return f"Quarterfinal {n}"
+    if str(slot).startswith("Semifinal"):
+        return f"Semifinal {n}"
+
+    return str(slot)
+
+
+def render_bracket_slot(slot_name, slot_df, logo_map, max_teams=3):
+    top = slot_df.sort_values("probability", ascending=False).head(max_teams)
+    shown_probability = top["probability"].sum()
+    other_probability = max(0, 1 - shown_probability)
+
+    html = (
+        '<div class="bracket-card">'
+        f'<div class="bracket-slot-title">{friendly_slot(slot_name)}</div>'
+    )
+
+    for _, row in top.iterrows():
+        logo = logo_map.get(row["team"], "")
+        probability = pct(row["probability"])
+
+        html += (
+            '<div class="bracket-team-row">'
+            '<div class="bracket-team-left">'
+            f'<img src="{logo}" width="24" height="24" style="border-radius:50%;">'
+            f'<span>{row["team"]}</span>'
+            "</div>"
+            f'<span class="bracket-prob">{probability}</span>'
+            "</div>"
+        )
+
+    if other_probability > 0.005:
+        html += (
+            '<div class="bracket-team-row bracket-other">'
+            '<div class="bracket-team-left">'
+            "<span>Others</span>"
+            "</div>"
+            f'<span class="bracket-prob">{pct(other_probability)}</span>'
+            "</div>"
+        )
+
+    html += "</div>"
+    st.markdown(html, unsafe_allow_html=True)
 
 
 st.set_page_config(
@@ -117,6 +179,57 @@ st.markdown(
     th {
         font-weight: 800;
         background: rgba(128,128,128,0.05);
+    }
+    .bracket-card {
+        border: 1px solid rgba(128,128,128,0.25);
+        border-radius: 14px;
+        padding: 12px;
+        margin-bottom: 14px;
+        background: rgba(128,128,128,0.055);
+        min-height: 128px;
+        box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+    }
+    .bracket-slot-title {
+        font-weight: 800;
+        font-size: 13px;
+        margin-bottom: 8px;
+        color: #666;
+        text-transform: uppercase;
+        letter-spacing: 0.02em;
+    }
+    .bracket-team-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+        margin-bottom: 7px;
+    }
+    .bracket-team-left {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-weight: 650;
+        min-width: 0;
+    }
+    .bracket-prob {
+        font-weight: 850;
+        white-space: nowrap;
+    }
+    .bracket-other {
+        color: #777;
+        font-style: italic;
+    }
+    .round-spacer-small {
+        height: 70px;
+    }
+    .round-spacer-medium {
+        height: 150px;
+    }
+    .round-spacer-large {
+        height: 330px;
+    }
+    .round-spacer-xl {
+        height: 700px;
     }
     </style>
     """,
@@ -325,51 +438,37 @@ with tab3:
 with tab4:
     st.subheader("Live Bracket Forecast")
     st.caption(
-        "Projected most likely teams for each knockout-round slot based on current simulations."
+        "Projected most likely teams for each knockout-round slot based on current simulations. "
+        "Each card shows the top projected teams plus an Others bucket."
     )
-
-    stage_order = [
-        "Round of 32",
-        "Round of 16",
-        "Quarterfinal",
-        "Semifinal",
-        "Champion",
-    ]
 
     bracket["stage"] = bracket["slot"].apply(slot_stage)
 
-    selected_stage = st.selectbox(
-        "Select bracket stage",
-        stage_order,
-        index=0,
-    )
+    stage_columns = [
+        ("Round of 32", "R32", ""),
+        ("Round of 16", "R16", "round-spacer-small"),
+        ("Quarterfinal", "QF", "round-spacer-medium"),
+        ("Semifinal", "SF", "round-spacer-large"),
+        ("Champion", "Champion", "round-spacer-xl"),
+    ]
 
-    stage_bracket = bracket[bracket["stage"] == selected_stage].copy()
+    cols = st.columns([1.35, 1.25, 1.15, 1.05, 0.95])
 
-    if stage_bracket.empty:
-        st.info("No bracket projections available for this stage yet.")
-    else:
-        slots = sorted(stage_bracket["slot"].unique())
+    for col, (stage, label, spacer_class) in zip(cols, stage_columns):
+        with col:
+            st.markdown(f"### {label}")
 
-        for slot in slots:
-            st.markdown(f"### {slot}")
+            stage_df = bracket[bracket["stage"] == stage].copy()
 
-            slot_df = stage_bracket[stage_bracket["slot"] == slot].copy()
-            slot_df = slot_df.sort_values("probability", ascending=False).head(5)
+            if stage_df.empty:
+                st.info("No projections yet.")
+                continue
 
-            for _, row in slot_df.iterrows():
-                left, right = st.columns([2, 3])
+            slots = sorted(stage_df["slot"].unique(), key=slot_number)
 
-                with left:
-                    st.markdown(
-                        team_html(row["team"], logo_map, size=30),
-                        unsafe_allow_html=True,
-                    )
+            for idx, slot in enumerate(slots):
+                if idx > 0 and spacer_class:
+                    st.markdown(f'<div class="{spacer_class}"></div>', unsafe_allow_html=True)
 
-                with right:
-                    st.markdown(
-                        percent_bar(row["probability"], label=pct(row["probability"])),
-                        unsafe_allow_html=True,
-                    )
-
-            st.divider()
+                slot_df = stage_df[stage_df["slot"] == slot]
+                render_bracket_slot(slot, slot_df, logo_map, max_teams=3)
