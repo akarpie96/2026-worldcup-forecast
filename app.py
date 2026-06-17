@@ -4,6 +4,7 @@ from pathlib import Path
 
 import pandas as pd
 import streamlit as st
+import plotly.express as px
 
 FORECAST_PATH = Path("data/processed/tournament_forecast.csv")
 MATCHES_PATH = Path("data/processed/matches.csv")
@@ -491,10 +492,8 @@ with tab5:
             lambda x: pd.to_datetime(x, utc=True)
         )
 
-        history["timestamp_display"] = (
-            history["timestamp"]
-            .dt.tz_convert("America/Los_Angeles")
-            .dt.strftime("%b %d %I:%M %p")
+        history["timestamp_local"] = history["timestamp"].dt.tz_convert(
+            "America/Los_Angeles"
         )
 
         metric_options = {
@@ -507,11 +506,6 @@ with tab5:
             "Champion": "champion_pct",
         }
 
-        selected_team = st.selectbox(
-            "Team",
-            sorted(history["team"].dropna().unique()),
-        )
-
         selected_metric_label = st.selectbox(
             "Metric",
             list(metric_options.keys()),
@@ -520,120 +514,158 @@ with tab5:
 
         selected_metric = metric_options[selected_metric_label]
 
-        team_history = history[history["team"] == selected_team].copy()
-        team_history = team_history.sort_values("timestamp")
+        teams_available = sorted(history["team"].dropna().unique())
 
-        team_history["value_pct"] = team_history[selected_metric] * 100
-
-        latest_value = team_history["value_pct"].iloc[-1]
-        first_value = team_history["value_pct"].iloc[0]
-        change = latest_value - first_value
-
-        c1, c2, c3 = st.columns(3)
-        c1.metric("Current", f"{latest_value:.1f}%")
-        c2.metric("Change since first snapshot", f"{change:+.1f} pts")
-        c3.metric("Snapshots", f"{len(team_history)}")
-
-        chart_data = team_history.set_index("timestamp_display")["value_pct"]
-        st.line_chart(chart_data, height=360)
-
-        st.markdown("#### Recent snapshots")
-
-        recent = team_history.sort_values("timestamp", ascending=False).head(10).copy()
-        recent["Probability"] = recent["value_pct"].map(lambda x: f"{x:.1f}%")
-
-        st.dataframe(
-            recent[["timestamp_display", "Probability"]].rename(
-                columns={"timestamp_display": "Time"}
-            ),
-            use_container_width=True,
-            hide_index=True,
+        selected_teams = st.multiselect(
+            "Teams to compare",
+            teams_available,
+            default=["Argentina", "Spain", "France"]
+            if all(t in teams_available for t in ["Argentina", "Spain", "France"])
+            else teams_available[:3],
         )
 
-        # ==========================
-        # Biggest Movers
-        # ==========================
-
-        st.markdown("#### Biggest movers since pre-tournament forecast")
-
-        metric_for_movers = selected_metric
-
-        pivot = history.pivot_table(
-            index="team",
-            columns="timestamp",
-            values=metric_for_movers,
-            aggfunc="last",
-        )
-
-        if pivot.shape[1] < 2:
-            st.info("Need at least two snapshots to calculate movers.")
+        if not selected_teams:
+            st.info("Select at least one team.")
         else:
-            sorted_times = sorted(pivot.columns)
+            chart_history = history[history["team"].isin(selected_teams)].copy()
+            chart_history = chart_history.sort_values("timestamp_local")
+            chart_history["value_pct"] = chart_history[selected_metric] * 100
 
-            baseline_time = sorted_times[0]
-            latest_time = sorted_times[-1]
-
-            st.caption(
-                f"Comparing {baseline_time.strftime('%b %d %Y')} "
-                f"to the latest forecast."
+            latest = (
+                chart_history.sort_values("timestamp_local")
+                .groupby("team")
+                .tail(1)
+                .copy()
             )
 
-            movers = pivot[[baseline_time, latest_time]].dropna().copy()
+            latest = latest.sort_values("value_pct", ascending=False)
 
-            movers["change_pts"] = (
-                movers[latest_time] - movers[baseline_time]
-            ) * 100
+            cols = st.columns(min(3, len(latest)))
 
-            movers = movers.reset_index()
-
-            gainers = movers.sort_values(
-                "change_pts",
-                ascending=False
-            ).head(10)
-
-            losers = movers.sort_values(
-                "change_pts",
-                ascending=True
-            ).head(10)
-
-            left, right = st.columns(2)
-
-            with left:
-                st.markdown("##### Biggest gainers")
-
-                gainers_display = gainers.copy()
-
-                gainers_display["Change"] = gainers_display[
-                    "change_pts"
-                ].map(lambda x: f"{x:+.2f} pts")
-
-                st.dataframe(
-                    gainers_display[
-                        ["team", "Change"]
-                    ].rename(
-                        columns={"team": "Team"}
-                    ),
-                    use_container_width=True,
-                    hide_index=True,
+            for col, (_, row) in zip(cols, latest.iterrows()):
+                col.metric(
+                    row["team"],
+                    f"{row['value_pct']:.1f}%",
                 )
 
-            with right:
-                st.markdown("##### Biggest decliners")
+            fig = px.line(
+                chart_history,
+                x="timestamp_local",
+                y="value_pct",
+                color="team",
+                markers=True,
+                labels={
+                    "timestamp_local": "Time",
+                    "value_pct": f"{selected_metric_label} probability (%)",
+                    "team": "Team",
+                },
+                title=f"{selected_metric_label} probability over time",
+            )
 
-                losers_display = losers.copy()
+            fig.update_layout(
+                hovermode="x unified",
+                yaxis_ticksuffix="%",
+                legend_title_text="Team",
+                margin=dict(l=20, r=20, t=60, b=20),
+            )
 
-                losers_display["Change"] = losers_display[
-                    "change_pts"
-                ].map(lambda x: f"{x:+.2f} pts")
+            st.plotly_chart(fig, use_container_width=True)
 
-                st.dataframe(
-                    losers_display[
-                        ["team", "Change"]
-                    ].rename(
-                        columns={"team": "Team"}
-                    ),
-                    use_container_width=True,
-                    hide_index=True,
+            st.markdown("#### Recent snapshots")
+
+            selected_team_for_table = st.selectbox(
+                "Recent snapshot table team",
+                selected_teams,
+            )
+
+            table_history = chart_history[
+                chart_history["team"] == selected_team_for_table
+            ].copy()
+
+            table_history["Time"] = table_history["timestamp_local"].dt.strftime(
+                "%b %d %I:%M %p"
+            )
+            table_history["Probability"] = table_history["value_pct"].map(
+                lambda x: f"{x:.1f}%"
+            )
+
+            st.dataframe(
+                table_history.sort_values("timestamp_local", ascending=False)[
+                    ["Time", "Probability"]
+                ].head(10),
+                use_container_width=True,
+                hide_index=True,
+            )
+
+            st.markdown("#### Biggest movers since pre-tournament forecast")
+
+            pivot = history.pivot_table(
+                index="team",
+                columns="timestamp",
+                values=selected_metric,
+                aggfunc="last",
+            )
+
+            if pivot.shape[1] < 2:
+                st.info("Need at least two snapshots to calculate movers.")
+            else:
+                sorted_times = sorted(pivot.columns)
+
+                baseline_time = sorted_times[0]
+                latest_time = sorted_times[-1]
+
+                st.caption(
+                    f"Comparing {baseline_time.strftime('%b %d %Y')} "
+                    f"to the latest forecast."
                 )
 
-        
+                movers = pivot[[baseline_time, latest_time]].dropna().copy()
+                movers["change_pts"] = (
+                    movers[latest_time] - movers[baseline_time]
+                ) * 100
+
+                movers = movers.reset_index()
+
+                gainers = movers.sort_values(
+                    "change_pts",
+                    ascending=False,
+                ).head(10)
+
+                losers = movers.sort_values(
+                    "change_pts",
+                    ascending=True,
+                ).head(10)
+
+                left, right = st.columns(2)
+
+                with left:
+                    st.markdown("##### Biggest gainers")
+
+                    gainers_display = gainers.copy()
+                    gainers_display["Change"] = gainers_display[
+                        "change_pts"
+                    ].map(lambda x: f"{x:+.2f} pts")
+
+                    st.dataframe(
+                        gainers_display[["team", "Change"]].rename(
+                            columns={"team": "Team"}
+                        ),
+                        use_container_width=True,
+                        hide_index=True,
+                    )
+
+                with right:
+                    st.markdown("##### Biggest decliners")
+
+                    losers_display = losers.copy()
+                    losers_display["Change"] = losers_display[
+                        "change_pts"
+                    ].map(lambda x: f"{x:+.2f} pts")
+
+                    st.dataframe(
+                        losers_display[["team", "Change"]].rename(
+                            columns={"team": "Team"}
+                        ),
+                        use_container_width=True,
+                        hide_index=True,
+                    )
