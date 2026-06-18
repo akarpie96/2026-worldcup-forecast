@@ -50,12 +50,19 @@ def percent_bar(value, label=None):
 
     return (
         f'<div style="display:flex; align-items:center; gap:10px; min-width:190px;">'
-        f'<div style="width:130px; background:rgba(128,128,128,0.18); '
-        f'border-radius:999px; height:16px;">'
-        f'<div style="width:{width:.1f}%; background:#2E86DE; '
-        f'height:16px; border-radius:999px;"></div>'
+        f'<div style="width:130px; background:rgba(128,128,128,0.18); border-radius:999px; height:16px;">'
+        f'<div style="width:{width:.1f}%; background:#2E86DE; height:16px; border-radius:999px;"></div>'
         f"</div>"
         f'<div style="min-width:48px; text-align:right; font-weight:700;">{text}</div>'
+        f"</div>"
+    )
+
+
+def simple_prob_bar(value):
+    width = max(0, min(100, value * 100))
+    return (
+        f'<div style="width:100%; background:rgba(128,128,128,0.16); border-radius:999px; height:10px; margin-top:8px;">'
+        f'<div style="width:{width:.1f}%; background:#2E86DE; height:10px; border-radius:999px;"></div>'
         f"</div>"
     )
 
@@ -800,6 +807,7 @@ with tab6:
 
             home_rating = ratings_map.get(home, 1500)
             away_rating = ratings_map.get(away, 1500)
+            rating_edge = home_rating - away_rating
 
             home_champ = forecast.loc[forecast["team"] == home, "champion_pct"]
             away_champ = forecast.loc[forecast["team"] == away, "champion_pct"]
@@ -807,14 +815,58 @@ with tab6:
             home_advance = forecast.loc[forecast["team"] == home, "advance_pct"]
             away_advance = forecast.loc[forecast["team"] == away, "advance_pct"]
 
-            home_champ_text = pct(home_champ.iloc[0]) if not home_champ.empty else "—"
-            away_champ_text = pct(away_champ.iloc[0]) if not away_champ.empty else "—"
+            home_round16 = forecast.loc[forecast["team"] == home, "round_16_pct"]
+            away_round16 = forecast.loc[forecast["team"] == away, "round_16_pct"]
 
-            home_advance_text = pct(home_advance.iloc[0]) if not home_advance.empty else "—"
-            away_advance_text = pct(away_advance.iloc[0]) if not away_advance.empty else "—"
+            home_champ_val = home_champ.iloc[0] if not home_champ.empty else None
+            away_champ_val = away_champ.iloc[0] if not away_champ.empty else None
+
+            home_advance_val = home_advance.iloc[0] if not home_advance.empty else None
+            away_advance_val = away_advance.iloc[0] if not away_advance.empty else None
+
+            home_round16_val = home_round16.iloc[0] if not home_round16.empty else None
+            away_round16_val = away_round16.iloc[0] if not away_round16.empty else None
+
+            home_champ_text = pct(home_champ_val) if home_champ_val is not None else "—"
+            away_champ_text = pct(away_champ_val) if away_champ_val is not None else "—"
+
+            home_advance_text = pct(home_advance_val) if home_advance_val is not None else "—"
+            away_advance_text = pct(away_advance_val) if away_advance_val is not None else "—"
+
+            home_round16_text = pct(home_round16_val) if home_round16_val is not None else "—"
+            away_round16_text = pct(away_round16_val) if away_round16_val is not None else "—"
 
             favorite = home if p_home > p_away else away
             favorite_prob = max(p_home, p_away)
+
+            impact_score = 0
+            if home_champ_val is not None:
+                impact_score += home_champ_val
+            if away_champ_val is not None:
+                impact_score += away_champ_val
+            if home_advance_val is not None:
+                impact_score += home_advance_val * 0.15
+            if away_advance_val is not None:
+                impact_score += away_advance_val * 0.15
+
+            if impact_score >= 0.25:
+                impact_label = "High"
+            elif impact_score >= 0.12:
+                impact_label = "Medium"
+            else:
+                impact_label = "Low"
+
+            home_bar = simple_prob_bar(p_home)
+            draw_bar = simple_prob_bar(p_draw)
+            away_bar = simple_prob_bar(p_away)
+
+            edge_text = (
+                f"{home} +{rating_edge:,.0f}"
+                if rating_edge > 0
+                else f"{away} +{abs(rating_edge):,.0f}"
+                if rating_edge < 0
+                else "Even"
+            )
 
             card_html = (
                 '<div style="border:1px solid rgba(128,128,128,0.22); border-radius:22px; '
@@ -841,24 +893,43 @@ with tab6:
                 '</div>'
                 f'<img src="{away_logo}" width="46" height="46" style="border-radius:50%;">'
                 '</div></div>'
-                '<div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px; margin-bottom:16px;">'
+                '<div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px; margin-bottom:18px;">'
                 '<div style="border-radius:16px; padding:14px; background:rgba(46,134,222,0.10); text-align:center;">'
                 f'<div style="font-size:13px; color:#666; font-weight:700;">{home} win</div>'
-                f'<div style="font-size:30px; font-weight:900;">{pct(p_home)}</div>'
+                f'<div style="font-size:30px; font-weight:900;">{pct(p_home)}</div>{home_bar}'
                 '</div>'
                 '<div style="border-radius:16px; padding:14px; background:rgba(128,128,128,0.10); text-align:center;">'
                 '<div style="font-size:13px; color:#666; font-weight:700;">Draw</div>'
-                f'<div style="font-size:30px; font-weight:900;">{pct(p_draw)}</div>'
+                f'<div style="font-size:30px; font-weight:900;">{pct(p_draw)}</div>{draw_bar}'
                 '</div>'
                 '<div style="border-radius:16px; padding:14px; background:rgba(46,134,222,0.10); text-align:center;">'
                 f'<div style="font-size:13px; color:#666; font-weight:700;">{away} win</div>'
-                f'<div style="font-size:30px; font-weight:900;">{pct(p_away)}</div>'
+                f'<div style="font-size:30px; font-weight:900;">{pct(p_away)}</div>{away_bar}'
                 '</div></div>'
-                '<div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px; color:#555; font-size:14px;">'
-                f'<div><b>Favorite:</b> {favorite} ({pct(favorite_prob)})</div>'
-                f'<div><b>{home} title odds:</b> {home_champ_text} · <b>Advance:</b> {home_advance_text}</div>'
-                f'<div><b>{away} title odds:</b> {away_champ_text} · <b>Advance:</b> {away_advance_text}</div>'
+                '<div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px; margin-bottom:14px;">'
+                '<div style="border-radius:14px; padding:12px; background:rgba(128,128,128,0.07);">'
+                f'<div style="font-size:12px; color:#777; font-weight:800;">Favorite</div>'
+                f'<div style="font-size:18px; font-weight:850;">{favorite}</div>'
+                f'<div style="font-size:13px; color:#777;">{pct(favorite_prob)} win probability</div>'
+                '</div>'
+                '<div style="border-radius:14px; padding:12px; background:rgba(128,128,128,0.07);">'
+                f'<div style="font-size:12px; color:#777; font-weight:800;">Rating edge</div>'
+                f'<div style="font-size:18px; font-weight:850;">{edge_text}</div>'
+                f'<div style="font-size:13px; color:#777;">Model strength difference</div>'
+                '</div>'
+                '<div style="border-radius:14px; padding:12px; background:rgba(128,128,128,0.07);">'
+                f'<div style="font-size:12px; color:#777; font-weight:800;">Forecast impact</div>'
+                f'<div style="font-size:18px; font-weight:850;">{impact_label}</div>'
+                f'<div style="font-size:13px; color:#777;">Based on title and advance stakes</div>'
                 '</div></div>'
+                '<div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; color:#555; font-size:14px;">'
+                '<div style="border-top:1px solid rgba(128,128,128,0.18); padding-top:10px;">'
+                f'<b>{home}</b><br>Title: {home_champ_text} · Advance: {home_advance_text} · R16: {home_round16_text}'
+                '</div>'
+                '<div style="border-top:1px solid rgba(128,128,128,0.18); padding-top:10px;">'
+                f'<b>{away}</b><br>Title: {away_champ_text} · Advance: {away_advance_text} · R16: {away_round16_text}'
+                '</div></div>'
+                '</div>'
             )
 
             st.markdown(card_html, unsafe_allow_html=True)
