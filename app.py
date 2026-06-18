@@ -11,6 +11,7 @@ MATCHES_PATH = Path("data/processed/matches.csv")
 TEAMS_PATH = Path("data/processed/teams.csv")
 BRACKET_PATH = Path("data/processed/bracket_forecast.csv")
 FORECAST_HISTORY_PATH = Path("data/processed/forecast_history.csv")
+RATINGS_PATH = Path("data/processed/team_ratings.csv")
 METADATA_PATH = Path("data/processed/metadata.json")
 
 
@@ -57,6 +58,27 @@ def percent_bar(value, label=None):
         f'<div style="min-width:48px; text-align:right; font-weight:700;">{text}</div>'
         f"</div>"
     )
+
+
+def win_prob(rating_a, rating_b):
+    return 1 / (1 + 10 ** ((rating_b - rating_a) / 400))
+
+
+def match_outcome_probs(team_a, team_b, ratings_map):
+    rating_a = ratings_map.get(team_a, 1500)
+    rating_b = ratings_map.get(team_b, 1500)
+
+    p_a_no_draw = win_prob(rating_a, rating_b)
+
+    gap = abs(rating_a - rating_b)
+    p_draw = max(0.16, 0.30 - gap / 2000)
+
+    remaining = 1 - p_draw
+
+    p_a_win = remaining * p_a_no_draw
+    p_b_win = remaining * (1 - p_a_no_draw)
+
+    return p_a_win, p_draw, p_b_win
 
 
 def slot_stage(slot):
@@ -277,6 +299,8 @@ forecast = pd.read_csv(FORECAST_PATH)
 matches = pd.read_csv(MATCHES_PATH)
 teams = pd.read_csv(TEAMS_PATH)
 bracket = pd.read_csv(BRACKET_PATH)
+ratings_df = pd.read_csv(RATINGS_PATH)
+ratings_map = dict(zip(ratings_df["team"], ratings_df["rating"]))
 
 if FORECAST_HISTORY_PATH.exists():
     history = pd.read_csv(FORECAST_HISTORY_PATH)
@@ -373,8 +397,8 @@ st.bar_chart(
 
 st.divider()
 
-tab1, tab2, tab3, tab4, tab5 = st.tabs(
-    ["Tournament odds", "Groups", "Matches", "Live Bracket", "Movement"]
+tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs(
+    ["Tournament odds", "Groups", "Matches", "Live Bracket", "Movement", "Match Forecasts"]
 )
 
 with tab1:
@@ -737,3 +761,104 @@ with tab5:
                         use_container_width=True,
                         hide_index=True,
                     )
+
+with tab6:
+    st.subheader("Upcoming Match Forecasts")
+    st.caption(
+        "Win/draw/loss forecasts for upcoming concrete World Cup matchups using team ratings."
+    )
+
+    upcoming = matches[matches["completed"] == False].copy()
+
+    placeholder_pattern = "Winner|Loser|Group|Place|Semifinal|Quarterfinal|Round of 16|Round of 32"
+
+    upcoming = upcoming[
+        ~upcoming["home_team"].astype(str).str.contains(placeholder_pattern, na=False)
+    ]
+    upcoming = upcoming[
+        ~upcoming["away_team"].astype(str).str.contains(placeholder_pattern, na=False)
+    ]
+
+    upcoming["date_parsed"] = pd.to_datetime(upcoming["date_utc"], utc=True)
+    upcoming = upcoming.sort_values("date_parsed").head(12)
+
+    if upcoming.empty:
+        st.info("No upcoming concrete matchups are available yet.")
+    else:
+        for _, row in upcoming.iterrows():
+            home = row["home_team"]
+            away = row["away_team"]
+
+            p_home, p_draw, p_away = match_outcome_probs(home, away, ratings_map)
+
+            date_local = row["date_parsed"].tz_convert("America/Los_Angeles")
+            date_label = date_local.strftime("%b %d, %I:%M %p PT")
+            stage_label = str(row.get("season_slug", "")).replace("-", " ").title()
+
+            home_logo = logo_map.get(home, "")
+            away_logo = logo_map.get(away, "")
+
+            home_rating = ratings_map.get(home, 1500)
+            away_rating = ratings_map.get(away, 1500)
+
+            home_champ = forecast.loc[forecast["team"] == home, "champion_pct"]
+            away_champ = forecast.loc[forecast["team"] == away, "champion_pct"]
+
+            home_advance = forecast.loc[forecast["team"] == home, "advance_pct"]
+            away_advance = forecast.loc[forecast["team"] == away, "advance_pct"]
+
+            home_champ_text = pct(home_champ.iloc[0]) if not home_champ.empty else "—"
+            away_champ_text = pct(away_champ.iloc[0]) if not away_champ.empty else "—"
+
+            home_advance_text = pct(home_advance.iloc[0]) if not home_advance.empty else "—"
+            away_advance_text = pct(away_advance.iloc[0]) if not away_advance.empty else "—"
+
+            favorite = home if p_home > p_away else away
+            favorite_prob = max(p_home, p_away)
+
+            card_html = (
+                '<div style="border:1px solid rgba(128,128,128,0.22); border-radius:22px; '
+                'padding:22px; margin:0 0 22px 0; background:linear-gradient(180deg, '
+                'rgba(128,128,128,0.07), rgba(128,128,128,0.025)); '
+                'box-shadow:0 2px 8px rgba(0,0,0,0.04);">'
+                '<div style="display:flex; align-items:center; justify-content:space-between; '
+                'margin-bottom:16px; color:#777; font-size:14px; font-weight:600;">'
+                f'<span>{date_label}</span><span>{stage_label}</span></div>'
+                '<div style="display:grid; grid-template-columns:1fr auto 1fr; '
+                'align-items:center; gap:22px; margin-bottom:20px;">'
+                '<div style="display:flex; align-items:center; gap:14px;">'
+                f'<img src="{home_logo}" width="46" height="46" style="border-radius:50%;">'
+                '<div>'
+                f'<div style="font-size:25px; font-weight:850;">{home}</div>'
+                f'<div style="color:#777; font-size:13px;">Rating {home_rating:,.0f}</div>'
+                '</div></div>'
+                '<div style="font-weight:900; color:#888; border:1px solid rgba(128,128,128,0.25); '
+                'border-radius:999px; padding:8px 13px; background:rgba(128,128,128,0.06);">VS</div>'
+                '<div style="display:flex; align-items:center; justify-content:flex-end; gap:14px;">'
+                '<div style="text-align:right;">'
+                f'<div style="font-size:25px; font-weight:850;">{away}</div>'
+                f'<div style="color:#777; font-size:13px;">Rating {away_rating:,.0f}</div>'
+                '</div>'
+                f'<img src="{away_logo}" width="46" height="46" style="border-radius:50%;">'
+                '</div></div>'
+                '<div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px; margin-bottom:16px;">'
+                '<div style="border-radius:16px; padding:14px; background:rgba(46,134,222,0.10); text-align:center;">'
+                f'<div style="font-size:13px; color:#666; font-weight:700;">{home} win</div>'
+                f'<div style="font-size:30px; font-weight:900;">{pct(p_home)}</div>'
+                '</div>'
+                '<div style="border-radius:16px; padding:14px; background:rgba(128,128,128,0.10); text-align:center;">'
+                '<div style="font-size:13px; color:#666; font-weight:700;">Draw</div>'
+                f'<div style="font-size:30px; font-weight:900;">{pct(p_draw)}</div>'
+                '</div>'
+                '<div style="border-radius:16px; padding:14px; background:rgba(46,134,222,0.10); text-align:center;">'
+                f'<div style="font-size:13px; color:#666; font-weight:700;">{away} win</div>'
+                f'<div style="font-size:30px; font-weight:900;">{pct(p_away)}</div>'
+                '</div></div>'
+                '<div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px; color:#555; font-size:14px;">'
+                f'<div><b>Favorite:</b> {favorite} ({pct(favorite_prob)})</div>'
+                f'<div><b>{home} title odds:</b> {home_champ_text} · <b>Advance:</b> {home_advance_text}</div>'
+                f'<div><b>{away} title odds:</b> {away_champ_text} · <b>Advance:</b> {away_advance_text}</div>'
+                '</div></div>'
+            )
+
+            st.markdown(card_html, unsafe_allow_html=True)
