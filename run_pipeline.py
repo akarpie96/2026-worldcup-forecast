@@ -6,6 +6,7 @@ COMMANDS = [
     ["python", "parse_espn.py"],
     ["python", "update_fifa_ratings.py"],
     ["python", "simulate_tournament.py"],
+    ["python", "generate_match_impacts.py"],
     ["python", "append_history.py"]
 
 ]
