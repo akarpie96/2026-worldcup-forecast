@@ -3,8 +3,8 @@ import re
 from pathlib import Path
 
 import pandas as pd
-import streamlit as st
 import plotly.express as px
+import streamlit as st
 
 FORECAST_PATH = Path("data/processed/tournament_forecast.csv")
 MATCHES_PATH = Path("data/processed/matches.csv")
@@ -126,6 +126,41 @@ def render_bracket_slot(slot_name, slot_df, logo_map, max_teams=3):
 
     html += "</div>"
     st.markdown(html, unsafe_allow_html=True)
+
+
+def build_movement_story(history, metric):
+    story_history = history.copy()
+    story_history["timestamp"] = story_history["timestamp_utc"].apply(
+        lambda x: pd.to_datetime(x, utc=True)
+    )
+
+    pivot = story_history.pivot_table(
+        index="team",
+        columns="timestamp",
+        values=metric,
+        aggfunc="last",
+    )
+
+    if pivot.shape[1] < 2:
+        return None
+
+    times = sorted(pivot.columns)
+    baseline = times[0]
+    latest = times[-1]
+
+    movers = pivot[[baseline, latest]].dropna().copy()
+    movers["change_pts"] = (movers[latest] - movers[baseline]) * 100
+    movers = movers.reset_index()
+
+    top_gain = movers.sort_values("change_pts", ascending=False).iloc[0]
+    top_drop = movers.sort_values("change_pts", ascending=True).iloc[0]
+
+    return {
+        "top_gain_team": top_gain["team"],
+        "top_gain_change": top_gain["change_pts"],
+        "top_drop_team": top_drop["team"],
+        "top_drop_change": top_drop["change_pts"],
+    }
 
 
 st.set_page_config(
@@ -294,6 +329,38 @@ for col, (_, row) in zip(cols, top5.iterrows()):
             </div>
             """,
             unsafe_allow_html=True,
+        )
+
+if not history.empty:
+    st.markdown("### Forecast storylines")
+
+    champion_story = build_movement_story(history, "champion_pct")
+    advance_story = build_movement_story(history, "advance_pct")
+
+    story_cols = st.columns(4)
+
+    if champion_story:
+        story_cols[0].metric(
+            "📈 Champion riser",
+            champion_story["top_gain_team"],
+            f"{champion_story['top_gain_change']:+.2f} pts",
+        )
+        story_cols[1].metric(
+            "📉 Champion faller",
+            champion_story["top_drop_team"],
+            f"{champion_story['top_drop_change']:+.2f} pts",
+        )
+
+    if advance_story:
+        story_cols[2].metric(
+            "🔥 Advance riser",
+            advance_story["top_gain_team"],
+            f"{advance_story['top_gain_change']:+.2f} pts",
+        )
+        story_cols[3].metric(
+            "⚠️ Advance faller",
+            advance_story["top_drop_team"],
+            f"{advance_story['top_drop_change']:+.2f} pts",
         )
 
 chart_top = top5.copy()
@@ -516,11 +583,12 @@ with tab5:
 
         teams_available = sorted(history["team"].dropna().unique())
 
+        default_teams = ["Argentina", "Spain", "France"]
         selected_teams = st.multiselect(
             "Teams to compare",
             teams_available,
-            default=["Argentina", "Spain", "France"]
-            if all(t in teams_available for t in ["Argentina", "Spain", "France"])
+            default=default_teams
+            if all(t in teams_available for t in default_teams)
             else teams_available[:3],
         )
 
