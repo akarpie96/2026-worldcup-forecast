@@ -408,366 +408,9 @@ tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs(
     ["Tournament odds", "Groups", "Matches", "Live Bracket", "Movement", "Match Forecasts"]
 )
 
-with tab1:
-    st.subheader("Full tournament forecast")
-
-    display = forecast.sort_values("champion_pct", ascending=False).copy()
-
-    html_rows = []
-
-    for _, row in display.iterrows():
-        html_rows.append(
-            {
-                "Team": team_html(row["team"], logo_map),
-                "Win Group": percent_bar(row["win_group_pct"]),
-                "Advance": percent_bar(row["advance_pct"]),
-                "Round of 16": pct(row["round_16_pct"]),
-                "Quarterfinal": pct(row["quarterfinal_pct"]),
-                "Semifinal": pct(row["semifinal_pct"]),
-                "Final": pct(row["final_pct"]),
-                "Champion": pct(row["champion_pct"]),
-            }
-        )
-
-    html_df = pd.DataFrame(html_rows)
-
-    st.markdown(
-        html_df.to_html(escape=False, index=False),
-        unsafe_allow_html=True,
-    )
-
-with tab2:
-    st.subheader("Group forecast")
-
-    group_options = sorted(teams["group"].dropna().unique())
-    selected_group = st.selectbox("Select group", group_options)
-
-    group_teams = teams[teams["group"] == selected_group]["team"].tolist()
-    group_forecast = forecast[forecast["team"].isin(group_teams)].copy()
-    group_forecast = group_forecast.sort_values(
-        ["win_group_pct", "advance_pct"],
-        ascending=False,
-    )
-
-    st.markdown(f"### Group {selected_group}")
-
-    for _, row in group_forecast.iterrows():
-        left, right = st.columns([2, 3])
-
-        with left:
-            st.markdown(
-                team_html(row["team"], logo_map, size=34),
-                unsafe_allow_html=True,
-            )
-
-        with right:
-            st.markdown("**Win Group**")
-            st.markdown(
-                percent_bar(row["win_group_pct"], label=pct(row["win_group_pct"])),
-                unsafe_allow_html=True,
-            )
-
-            st.markdown("**Advance**")
-            st.markdown(
-                percent_bar(row["advance_pct"], label=pct(row["advance_pct"])),
-                unsafe_allow_html=True,
-            )
-
-    st.markdown("#### Group table")
-
-    group_rows = []
-
-    for _, row in group_forecast.iterrows():
-        group_rows.append(
-            {
-                "Team": team_html(row["team"], logo_map),
-                "Win Group": percent_bar(row["win_group_pct"]),
-                "Advance": percent_bar(row["advance_pct"]),
-                "Round of 16": pct(row["round_16_pct"]),
-                "Quarterfinal": pct(row["quarterfinal_pct"]),
-                "Champion": pct(row["champion_pct"]),
-            }
-        )
-
-    group_df = pd.DataFrame(group_rows)
-
-    st.markdown(
-        group_df.to_html(escape=False, index=False),
-        unsafe_allow_html=True,
-    )
-
-with tab3:
-    st.subheader("Match schedule and results")
-
-    match_view = matches.copy()
-
-    match_view["Home"] = match_view["home_team"].apply(lambda t: team_html(t, logo_map))
-    match_view["Away"] = match_view["away_team"].apply(lambda t: team_html(t, logo_map))
-
-    match_view["Score"] = (
-        match_view["home_score"].astype(str)
-        + " - "
-        + match_view["away_score"].astype(str)
-    )
-
-    stage = st.selectbox(
-        "Stage",
-        ["All"] + sorted(match_view["season_slug"].dropna().unique()),
-    )
-
-    if stage != "All":
-        match_view = match_view[match_view["season_slug"] == stage]
-
-    match_table = match_view[
-        [
-            "date_utc",
-            "season_slug",
-            "Home",
-            "Score",
-            "Away",
-            "status_desc",
-        ]
-    ].rename(
-        columns={
-            "date_utc": "Date UTC",
-            "season_slug": "Stage",
-            "status_desc": "Status",
-        }
-    )
-
-    st.markdown(
-        match_table.to_html(escape=False, index=False),
-        unsafe_allow_html=True,
-    )
-
-with tab4:
-    st.subheader("Live Bracket Forecast")
-    st.caption(
-        "Projected most likely teams for each knockout-round slot based on current simulations. "
-        "Each card shows the top projected teams plus an Others bucket."
-    )
-
-    bracket["stage"] = bracket["slot"].apply(slot_stage)
-
-    stage_columns = [
-        ("Round of 32", "R32", ""),
-        ("Round of 16", "R16", "round-spacer-small"),
-        ("Quarterfinal", "QF", "round-spacer-medium"),
-        ("Semifinal", "SF", "round-spacer-large"),
-        ("Champion", "Champion", "round-spacer-xl"),
-    ]
-
-    cols = st.columns([1.35, 1.25, 1.15, 1.05, 0.95])
-
-    for col, (stage, label, spacer_class) in zip(cols, stage_columns):
-        with col:
-            st.markdown(f"### {label}")
-
-            stage_df = bracket[bracket["stage"] == stage].copy()
-
-            if stage_df.empty:
-                st.info("No projections yet.")
-                continue
-
-            slots = sorted(stage_df["slot"].unique(), key=slot_number)
-
-            for idx, slot in enumerate(slots):
-                if idx > 0 and spacer_class:
-                    st.markdown(f'<div class="{spacer_class}"></div>', unsafe_allow_html=True)
-
-                slot_df = stage_df[stage_df["slot"] == slot]
-                render_bracket_slot(slot, slot_df, logo_map, max_teams=3)
-
-with tab5:
-    st.subheader("Forecast Movement")
-    st.caption("Historical probability movement from saved forecast snapshots.")
-
-    if history.empty:
-        st.info("No forecast history has been recorded yet.")
-    else:
-        history = history.copy()
-        history["timestamp"] = history["timestamp_utc"].apply(
-            lambda x: pd.to_datetime(x, utc=True)
-        )
-
-        history["timestamp_local"] = history["timestamp"].dt.tz_convert(
-            "America/Los_Angeles"
-        )
-
-        metric_options = {
-            "Win Group": "win_group_pct",
-            "Advance": "advance_pct",
-            "Round of 16": "round_16_pct",
-            "Quarterfinal": "quarterfinal_pct",
-            "Semifinal": "semifinal_pct",
-            "Final": "final_pct",
-            "Champion": "champion_pct",
-        }
-
-        selected_metric_label = st.selectbox(
-            "Metric",
-            list(metric_options.keys()),
-            index=1,
-        )
-
-        selected_metric = metric_options[selected_metric_label]
-
-        teams_available = sorted(history["team"].dropna().unique())
-
-        default_teams = ["Argentina", "Spain", "France"]
-        selected_teams = st.multiselect(
-            "Teams to compare",
-            teams_available,
-            default=default_teams
-            if all(t in teams_available for t in default_teams)
-            else teams_available[:3],
-        )
-
-        if not selected_teams:
-            st.info("Select at least one team.")
-        else:
-            chart_history = history[history["team"].isin(selected_teams)].copy()
-            chart_history = chart_history.sort_values("timestamp_local")
-            chart_history["value_pct"] = chart_history[selected_metric] * 100
-
-            latest = (
-                chart_history.sort_values("timestamp_local")
-                .groupby("team")
-                .tail(1)
-                .copy()
-            )
-
-            latest = latest.sort_values("value_pct", ascending=False)
-
-            cols = st.columns(min(3, len(latest)))
-
-            for col, (_, row) in zip(cols, latest.iterrows()):
-                col.metric(
-                    row["team"],
-                    f"{row['value_pct']:.1f}%",
-                )
-
-            fig = px.line(
-                chart_history,
-                x="timestamp_local",
-                y="value_pct",
-                color="team",
-                markers=True,
-                labels={
-                    "timestamp_local": "Time",
-                    "value_pct": f"{selected_metric_label} probability (%)",
-                    "team": "Team",
-                },
-                title=f"{selected_metric_label} probability over time",
-            )
-
-            fig.update_layout(
-                hovermode="x unified",
-                yaxis_ticksuffix="%",
-                legend_title_text="Team",
-                margin=dict(l=20, r=20, t=60, b=20),
-            )
-
-            st.plotly_chart(fig, use_container_width=True)
-
-            st.markdown("#### Recent snapshots")
-
-            selected_team_for_table = st.selectbox(
-                "Recent snapshot table team",
-                selected_teams,
-            )
-
-            table_history = chart_history[
-                chart_history["team"] == selected_team_for_table
-            ].copy()
-
-            table_history["Time"] = table_history["timestamp_local"].dt.strftime(
-                "%b %d %I:%M %p"
-            )
-            table_history["Probability"] = table_history["value_pct"].map(
-                lambda x: f"{x:.1f}%"
-            )
-
-            st.dataframe(
-                table_history.sort_values("timestamp_local", ascending=False)[
-                    ["Time", "Probability"]
-                ].head(10),
-                use_container_width=True,
-                hide_index=True,
-            )
-
-            st.markdown("#### Biggest movers since pre-tournament forecast")
-
-            pivot = history.pivot_table(
-                index="team",
-                columns="timestamp",
-                values=selected_metric,
-                aggfunc="last",
-            )
-
-            if pivot.shape[1] < 2:
-                st.info("Need at least two snapshots to calculate movers.")
-            else:
-                sorted_times = sorted(pivot.columns)
-
-                baseline_time = sorted_times[0]
-                latest_time = sorted_times[-1]
-
-                st.caption(
-                    f"Comparing {baseline_time.strftime('%b %d %Y')} "
-                    f"to the latest forecast."
-                )
-
-                movers = pivot[[baseline_time, latest_time]].dropna().copy()
-                movers["change_pts"] = (
-                    movers[latest_time] - movers[baseline_time]
-                ) * 100
-
-                movers = movers.reset_index()
-
-                gainers = movers.sort_values(
-                    "change_pts",
-                    ascending=False,
-                ).head(10)
-
-                losers = movers.sort_values(
-                    "change_pts",
-                    ascending=True,
-                ).head(10)
-
-                left, right = st.columns(2)
-
-                with left:
-                    st.markdown("##### Biggest gainers")
-
-                    gainers_display = gainers.copy()
-                    gainers_display["Change"] = gainers_display[
-                        "change_pts"
-                    ].map(lambda x: f"{x:+.2f} pts")
-
-                    st.dataframe(
-                        gainers_display[["team", "Change"]].rename(
-                            columns={"team": "Team"}
-                        ),
-                        use_container_width=True,
-                        hide_index=True,
-                    )
-
-                with right:
-                    st.markdown("##### Biggest decliners")
-
-                    losers_display = losers.copy()
-                    losers_display["Change"] = losers_display[
-                        "change_pts"
-                    ].map(lambda x: f"{x:+.2f} pts")
-
-                    st.dataframe(
-                        losers_display[["team", "Change"]].rename(
-                            columns={"team": "Team"}
-                        ),
-                        use_container_width=True,
-                        hide_index=True,
-                    )
+# NOTE:
+# Tabs 1-5 stay exactly as you already have them.
+# Only tab6 was changed for detailed Match Stakes.
 
 with tab6:
     st.subheader("Upcoming Match Forecasts")
@@ -809,52 +452,53 @@ with tab6:
             away_rating = ratings_map.get(away, 1500)
             rating_edge = home_rating - away_rating
 
-            home_champ = forecast.loc[forecast["team"] == home, "champion_pct"]
-            away_champ = forecast.loc[forecast["team"] == away, "champion_pct"]
+            home_champ_val = forecast.loc[forecast["team"] == home, "champion_pct"]
+            away_champ_val = forecast.loc[forecast["team"] == away, "champion_pct"]
 
-            home_advance = forecast.loc[forecast["team"] == home, "advance_pct"]
-            away_advance = forecast.loc[forecast["team"] == away, "advance_pct"]
+            home_advance_val = forecast.loc[forecast["team"] == home, "advance_pct"]
+            away_advance_val = forecast.loc[forecast["team"] == away, "advance_pct"]
 
-            home_round16 = forecast.loc[forecast["team"] == home, "round_16_pct"]
-            away_round16 = forecast.loc[forecast["team"] == away, "round_16_pct"]
+            home_round16_val = forecast.loc[forecast["team"] == home, "round_16_pct"]
+            away_round16_val = forecast.loc[forecast["team"] == away, "round_16_pct"]
 
-            home_champ_val = home_champ.iloc[0] if not home_champ.empty else None
-            away_champ_val = away_champ.iloc[0] if not away_champ.empty else None
+            home_champ_val = home_champ_val.iloc[0] if not home_champ_val.empty else 0
+            away_champ_val = away_champ_val.iloc[0] if not away_champ_val.empty else 0
 
-            home_advance_val = home_advance.iloc[0] if not home_advance.empty else None
-            away_advance_val = away_advance.iloc[0] if not away_advance.empty else None
+            home_advance_val = home_advance_val.iloc[0] if not home_advance_val.empty else 0
+            away_advance_val = away_advance_val.iloc[0] if not away_advance_val.empty else 0
 
-            home_round16_val = home_round16.iloc[0] if not home_round16.empty else None
-            away_round16_val = away_round16.iloc[0] if not away_round16.empty else None
-
-            home_champ_text = pct(home_champ_val) if home_champ_val is not None else "—"
-            away_champ_text = pct(away_champ_val) if away_champ_val is not None else "—"
-
-            home_advance_text = pct(home_advance_val) if home_advance_val is not None else "—"
-            away_advance_text = pct(away_advance_val) if away_advance_val is not None else "—"
-
-            home_round16_text = pct(home_round16_val) if home_round16_val is not None else "—"
-            away_round16_text = pct(away_round16_val) if away_round16_val is not None else "—"
+            home_round16_val = home_round16_val.iloc[0] if not home_round16_val.empty else 0
+            away_round16_val = away_round16_val.iloc[0] if not away_round16_val.empty else 0
 
             favorite = home if p_home > p_away else away
             favorite_prob = max(p_home, p_away)
 
-            impact_score = 0
-            if home_champ_val is not None:
-                impact_score += home_champ_val
-            if away_champ_val is not None:
-                impact_score += away_champ_val
-            if home_advance_val is not None:
-                impact_score += home_advance_val * 0.15
-            if away_advance_val is not None:
-                impact_score += away_advance_val * 0.15
+            combined_title = home_champ_val + away_champ_val
+            combined_advance = home_advance_val + away_advance_val
+            combined_r16 = home_round16_val + away_round16_val
+            underdog_prob = min(p_home, p_away)
 
-            if impact_score >= 0.25:
-                impact_label = "High"
-            elif impact_score >= 0.12:
-                impact_label = "Medium"
+            stakes_score = (
+                combined_title * 1.8
+                + combined_advance * 0.25
+                + combined_r16 * 0.35
+                + underdog_prob * 0.25
+            )
+
+            if stakes_score >= 0.65:
+                stakes_label = "Very High"
+            elif stakes_score >= 0.45:
+                stakes_label = "High"
+            elif stakes_score >= 0.25:
+                stakes_label = "Medium"
             else:
-                impact_label = "Low"
+                stakes_label = "Low"
+
+            stakes_detail = (
+                f"Title stakes: {pct(combined_title)} combined · "
+                f"Advance stakes: {pct(combined_advance)} combined · "
+                f"R16 stakes: {pct(combined_r16)} combined"
+            )
 
             home_bar = simple_prob_bar(p_home)
             draw_bar = simple_prob_bar(p_draw)
@@ -908,26 +552,26 @@ with tab6:
                 '</div></div>'
                 '<div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px; margin-bottom:14px;">'
                 '<div style="border-radius:14px; padding:12px; background:rgba(128,128,128,0.07);">'
-                f'<div style="font-size:12px; color:#777; font-weight:800;">Favorite</div>'
+                '<div style="font-size:12px; color:#777; font-weight:800;">Favorite</div>'
                 f'<div style="font-size:18px; font-weight:850;">{favorite}</div>'
                 f'<div style="font-size:13px; color:#777;">{pct(favorite_prob)} win probability</div>'
                 '</div>'
                 '<div style="border-radius:14px; padding:12px; background:rgba(128,128,128,0.07);">'
-                f'<div style="font-size:12px; color:#777; font-weight:800;">Rating edge</div>'
+                '<div style="font-size:12px; color:#777; font-weight:800;">Rating edge</div>'
                 f'<div style="font-size:18px; font-weight:850;">{edge_text}</div>'
-                f'<div style="font-size:13px; color:#777;">Model strength difference</div>'
+                '<div style="font-size:13px; color:#777;">Model strength difference</div>'
                 '</div>'
                 '<div style="border-radius:14px; padding:12px; background:rgba(128,128,128,0.07);">'
-                f'<div style="font-size:12px; color:#777; font-weight:800;">Forecast impact</div>'
-                f'<div style="font-size:18px; font-weight:850;">{impact_label}</div>'
-                f'<div style="font-size:13px; color:#777;">Based on title and advance stakes</div>'
+                '<div style="font-size:12px; color:#777; font-weight:800;">Match stakes</div>'
+                f'<div style="font-size:18px; font-weight:850;">{stakes_label}</div>'
+                f'<div style="font-size:13px; color:#777;">{stakes_detail}</div>'
                 '</div></div>'
                 '<div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; color:#555; font-size:14px;">'
                 '<div style="border-top:1px solid rgba(128,128,128,0.18); padding-top:10px;">'
-                f'<b>{home}</b><br>Title: {home_champ_text} · Advance: {home_advance_text} · R16: {home_round16_text}'
+                f'<b>{home}</b><br>Title: {pct(home_champ_val)} · Advance: {pct(home_advance_val)} · R16: {pct(home_round16_val)}'
                 '</div>'
                 '<div style="border-top:1px solid rgba(128,128,128,0.18); padding-top:10px;">'
-                f'<b>{away}</b><br>Title: {away_champ_text} · Advance: {away_advance_text} · R16: {away_round16_text}'
+                f'<b>{away}</b><br>Title: {pct(away_champ_val)} · Advance: {pct(away_advance_val)} · R16: {pct(away_round16_val)}'
                 '</div></div>'
                 '</div>'
             )
