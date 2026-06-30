@@ -1,73 +1,69 @@
 slot,team,probability,count,total
-Quarterfinal 2 Winner,Spain,0.4164,4164,10000
-Quarterfinal 2 Winner,Belgium,0.163,1630,10000
-Quarterfinal 2 Winner,Portugal,0.1494,1494,10000
-Quarterfinal 2 Winner,Senegal,0.085,850,10000
-Quarterfinal 2 Winner,Croatia,0.0786,786,10000
-Quarterfinal 2 Winner,United States,0.0673,673,10000
-Quarterfinal 2 Winner,Austria,0.0265,265,10000
-Quarterfinal 2 Winner,Bosnia-Herzegovina,0.0138,138,10000
-Quarterfinal 4 Winner,Argentina,0.5814,5814,10000
-Quarterfinal 4 Winner,Colombia,0.1612,1612,10000
-Quarterfinal 4 Winner,Switzerland,0.0896,896,10000
-Quarterfinal 4 Winner,Australia,0.0593,593,10000
-Quarterfinal 4 Winner,Egypt,0.0359,359,10000
-Quarterfinal 4 Winner,Ghana,0.0329,329,10000
-Quarterfinal 4 Winner,Algeria,0.0318,318,10000
-Quarterfinal 4 Winner,Cape Verde,0.0079,79,10000
-Round of 16 2 Winner,Brazil,0.5,5000,10000
-Round of 16 2 Winner,Japan,0.1925,1925,10000
-Round of 16 2 Winner,Ivory Coast,0.1545,1545,10000
-Round of 16 2 Winner,Norway,0.153,1530,10000
-Round of 16 4 Winner,England,0.6236,6236,10000
-Round of 16 4 Winner,Mexico,0.2265,2265,10000
-Round of 16 4 Winner,Ecuador,0.1089,1089,10000
-Round of 16 4 Winner,Congo DR,0.041,410,10000
-Round of 16 5 Winner,Spain,0.5523,5523,10000
-Round of 16 5 Winner,Portugal,0.2379,2379,10000
-Round of 16 5 Winner,Croatia,0.1461,1461,10000
-Round of 16 5 Winner,Austria,0.0637,637,10000
-Round of 16 6 Winner,Belgium,0.4075,4075,10000
-Round of 16 6 Winner,Senegal,0.2595,2595,10000
-Round of 16 6 Winner,United States,0.2519,2519,10000
-Round of 16 6 Winner,Bosnia-Herzegovina,0.0811,811,10000
-Round of 16 7 Winner,Colombia,0.446,4460,10000
-Round of 16 7 Winner,Australia,0.2411,2411,10000
-Round of 16 7 Winner,Egypt,0.1666,1666,10000
-Round of 16 7 Winner,Ghana,0.1463,1463,10000
-Round of 16 8 Winner,Argentina,0.7335,7335,10000
-Round of 16 8 Winner,Switzerland,0.1619,1619,10000
-Round of 16 8 Winner,Algeria,0.0768,768,10000
-Round of 16 8 Winner,Cape Verde,0.0278,278,10000
-Round of 32 1 Winner,Canada,0.5554,5554,10000
-Round of 32 1 Winner,South Africa,0.4446,4446,10000
-Round of 32 10 Winner,United States,0.6587,6587,10000
-Round of 32 10 Winner,Bosnia-Herzegovina,0.3413,3413,10000
-Round of 32 11 Winner,Spain,0.8149,8149,10000
-Round of 32 11 Winner,Austria,0.1851,1851,10000
-Round of 32 12 Winner,Portugal,0.5697,5697,10000
-Round of 32 12 Winner,Croatia,0.4303,4303,10000
-Round of 32 13 Winner,Switzerland,0.6094,6094,10000
-Round of 32 13 Winner,Algeria,0.3906,3906,10000
-Round of 32 14 Winner,Australia,0.5511,5511,10000
-Round of 32 14 Winner,Egypt,0.4489,4489,10000
-Round of 32 15 Winner,Argentina,0.9096,9096,10000
-Round of 32 15 Winner,Cape Verde,0.0904,904,10000
-Round of 32 16 Winner,Colombia,0.6886,6886,10000
-Round of 32 16 Winner,Ghana,0.3114,3114,10000
-Round of 32 2 Winner,Brazil,0.6735,6735,10000
-Round of 32 2 Winner,Japan,0.3265,3265,10000
-Round of 32 3 Winner,Germany,0.7436,7436,10000
-Round of 32 3 Winner,Paraguay,0.2564,2564,10000
-Round of 32 4 Winner,Morocco,0.5044,5044,10000
-Round of 32 4 Winner,Netherlands,0.4956,4956,10000
-Round of 32 5 Winner,Ivory Coast,0.5028,5028,10000
-Round of 32 5 Winner,Norway,0.4972,4972,10000
-Round of 32 6 Winner,France,0.7783,7783,10000
-Round of 32 6 Winner,Sweden,0.2217,2217,10000
-Round of 32 7 Winner,Mexico,0.6129,6129,10000
-Round of 32 7 Winner,Ecuador,0.3871,3871,10000
-Round of 32 8 Winner,England,0.861,8610,10000
-Round of 32 8 Winner,Congo DR,0.139,1390,10000
-Round of 32 9 Winner,Belgium,0.5842,5842,10000
-Round of 32 9 Winner,Senegal,0.4158,4158,10000
+Quarterfinal 2 Winner,Spain,0.4063,4063,10000
+Quarterfinal 2 Winner,Belgium,0.1676,1676,10000
+Quarterfinal 2 Winner,Portugal,0.1532,1532,10000
+Quarterfinal 2 Winner,Senegal,0.0841,841,10000
+Quarterfinal 2 Winner,Croatia,0.0841,841,10000
+Quarterfinal 2 Winner,United States,0.0659,659,10000
+Quarterfinal 2 Winner,Austria,0.0241,241,10000
+Quarterfinal 2 Winner,Bosnia-Herzegovina,0.0147,147,10000
+Quarterfinal 4 Winner,Argentina,0.5884,5884,10000
+Quarterfinal 4 Winner,Colombia,0.1578,1578,10000
+Quarterfinal 4 Winner,Switzerland,0.0915,915,10000
+Quarterfinal 4 Winner,Australia,0.0604,604,10000
+Quarterfinal 4 Winner,Egypt,0.0349,349,10000
+Quarterfinal 4 Winner,Ghana,0.03,300,10000
+Quarterfinal 4 Winner,Algeria,0.0294,294,10000
+Quarterfinal 4 Winner,Cape Verde,0.0076,76,10000
+Round of 16 4 Winner,England,0.6206,6206,10000
+Round of 16 4 Winner,Mexico,0.2182,2182,10000
+Round of 16 4 Winner,Ecuador,0.1168,1168,10000
+Round of 16 4 Winner,Congo DR,0.0444,444,10000
+Round of 16 5 Winner,Spain,0.5451,5451,10000
+Round of 16 5 Winner,Portugal,0.2442,2442,10000
+Round of 16 5 Winner,Croatia,0.1521,1521,10000
+Round of 16 5 Winner,Austria,0.0586,586,10000
+Round of 16 6 Winner,Belgium,0.4101,4101,10000
+Round of 16 6 Winner,Senegal,0.2534,2534,10000
+Round of 16 6 Winner,United States,0.2517,2517,10000
+Round of 16 6 Winner,Bosnia-Herzegovina,0.0848,848,10000
+Round of 16 7 Winner,Colombia,0.4438,4438,10000
+Round of 16 7 Winner,Australia,0.2406,2406,10000
+Round of 16 7 Winner,Egypt,0.1663,1663,10000
+Round of 16 7 Winner,Ghana,0.1493,1493,10000
+Round of 16 8 Winner,Argentina,0.732,7320,10000
+Round of 16 8 Winner,Switzerland,0.1685,1685,10000
+Round of 16 8 Winner,Algeria,0.0725,725,10000
+Round of 16 8 Winner,Cape Verde,0.027,270,10000
+Round of 32 1 Winner,Canada,0.5509,5509,10000
+Round of 32 1 Winner,South Africa,0.4491,4491,10000
+Round of 32 10 Winner,United States,0.6491,6491,10000
+Round of 32 10 Winner,Bosnia-Herzegovina,0.3509,3509,10000
+Round of 32 11 Winner,Spain,0.8125,8125,10000
+Round of 32 11 Winner,Austria,0.1875,1875,10000
+Round of 32 12 Winner,Portugal,0.5751,5751,10000
+Round of 32 12 Winner,Croatia,0.4249,4249,10000
+Round of 32 13 Winner,Switzerland,0.6223,6223,10000
+Round of 32 13 Winner,Algeria,0.3777,3777,10000
+Round of 32 14 Winner,Australia,0.5533,5533,10000
+Round of 32 14 Winner,Egypt,0.4467,4467,10000
+Round of 32 15 Winner,Argentina,0.907,9070,10000
+Round of 32 15 Winner,Cape Verde,0.093,930,10000
+Round of 32 16 Winner,Colombia,0.683,6830,10000
+Round of 32 16 Winner,Ghana,0.317,3170,10000
+Round of 32 2 Winner,Brazil,0.6678,6678,10000
+Round of 32 2 Winner,Japan,0.3322,3322,10000
+Round of 32 3 Winner,Germany,0.7511,7511,10000
+Round of 32 3 Winner,Paraguay,0.2489,2489,10000
+Round of 32 4 Winner,Netherlands,0.5055,5055,10000
+Round of 32 4 Winner,Morocco,0.4945,4945,10000
+Round of 32 5 Winner,Norway,0.5075,5075,10000
+Round of 32 5 Winner,Ivory Coast,0.4925,4925,10000
+Round of 32 6 Winner,France,0.7893,7893,10000
+Round of 32 6 Winner,Sweden,0.2107,2107,10000
+Round of 32 7 Winner,Mexico,0.6027,6027,10000
+Round of 32 7 Winner,Ecuador,0.3973,3973,10000
+Round of 32 8 Winner,England,0.8548,8548,10000
+Round of 32 8 Winner,Congo DR,0.1452,1452,10000
+Round of 32 9 Winner,Belgium,0.5862,5862,10000
+Round of 32 9 Winner,Senegal,0.4138,4138,10000
