@@ -1,49 +1,37 @@
 slot,team,probability,count,total
-Quarterfinal 4 Winner,Argentina,0.5823,5823,10000
-Quarterfinal 4 Winner,Colombia,0.1664,1664,10000
-Quarterfinal 4 Winner,Switzerland,0.0875,875,10000
-Quarterfinal 4 Winner,Australia,0.0559,559,10000
-Quarterfinal 4 Winner,Egypt,0.0356,356,10000
-Quarterfinal 4 Winner,Algeria,0.0324,324,10000
-Quarterfinal 4 Winner,Ghana,0.032,320,10000
-Quarterfinal 4 Winner,Cape Verde,0.0079,79,10000
-Round of 16 7 Winner,Colombia,0.4515,4515,10000
-Round of 16 7 Winner,Australia,0.2335,2335,10000
-Round of 16 7 Winner,Egypt,0.1651,1651,10000
-Round of 16 7 Winner,Ghana,0.1499,1499,10000
-Round of 16 8 Winner,Argentina,0.7305,7305,10000
-Round of 16 8 Winner,Switzerland,0.164,1640,10000
-Round of 16 8 Winner,Algeria,0.0754,754,10000
-Round of 16 8 Winner,Cape Verde,0.0301,301,10000
-Round of 32 1 Winner,Canada,0.5519,5519,10000
-Round of 32 1 Winner,South Africa,0.4481,4481,10000
-Round of 32 10 Winner,United States,0.6558,6558,10000
-Round of 32 10 Winner,Bosnia-Herzegovina,0.3442,3442,10000
-Round of 32 11 Winner,Spain,0.8127,8127,10000
-Round of 32 11 Winner,Austria,0.1873,1873,10000
-Round of 32 12 Winner,Portugal,0.5746,5746,10000
-Round of 32 12 Winner,Croatia,0.4254,4254,10000
-Round of 32 13 Winner,Switzerland,0.6221,6221,10000
-Round of 32 13 Winner,Algeria,0.3779,3779,10000
-Round of 32 14 Winner,Australia,0.5514,5514,10000
-Round of 32 14 Winner,Egypt,0.4486,4486,10000
-Round of 32 15 Winner,Argentina,0.9063,9063,10000
-Round of 32 15 Winner,Cape Verde,0.0937,937,10000
-Round of 32 16 Winner,Colombia,0.6873,6873,10000
-Round of 32 16 Winner,Ghana,0.3127,3127,10000
-Round of 32 2 Winner,Brazil,0.6641,6641,10000
-Round of 32 2 Winner,Japan,0.3359,3359,10000
-Round of 32 3 Winner,Germany,0.7437,7437,10000
-Round of 32 3 Winner,Paraguay,0.2563,2563,10000
-Round of 32 4 Winner,Morocco,0.5017,5017,10000
-Round of 32 4 Winner,Netherlands,0.4983,4983,10000
-Round of 32 5 Winner,Norway,0.5047,5047,10000
-Round of 32 5 Winner,Ivory Coast,0.4953,4953,10000
-Round of 32 6 Winner,France,0.7773,7773,10000
-Round of 32 6 Winner,Sweden,0.2227,2227,10000
-Round of 32 7 Winner,Mexico,0.6206,6206,10000
-Round of 32 7 Winner,Ecuador,0.3794,3794,10000
-Round of 32 8 Winner,England,0.8624,8624,10000
-Round of 32 8 Winner,Congo DR,0.1376,1376,10000
-Round of 32 9 Winner,Belgium,0.588,5880,10000
-Round of 32 9 Winner,Senegal,0.412,4120,10000
+Round of 16 7 Winner,Colombia,0.4538,4538,10000
+Round of 16 7 Winner,Australia,0.2364,2364,10000
+Round of 16 7 Winner,Egypt,0.1701,1701,10000
+Round of 16 7 Winner,Ghana,0.1397,1397,10000
+Round of 32 1 Winner,Canada,0.547,5470,10000
+Round of 32 1 Winner,South Africa,0.453,4530,10000
+Round of 32 10 Winner,United States,0.6449,6449,10000
+Round of 32 10 Winner,Bosnia-Herzegovina,0.3551,3551,10000
+Round of 32 11 Winner,Spain,0.8128,8128,10000
+Round of 32 11 Winner,Austria,0.1872,1872,10000
+Round of 32 12 Winner,Portugal,0.573,5730,10000
+Round of 32 12 Winner,Croatia,0.427,4270,10000
+Round of 32 13 Winner,Switzerland,0.6165,6165,10000
+Round of 32 13 Winner,Algeria,0.3835,3835,10000
+Round of 32 14 Winner,Australia,0.556,5560,10000
+Round of 32 14 Winner,Egypt,0.444,4440,10000
+Round of 32 15 Winner,Argentina,0.9037,9037,10000
+Round of 32 15 Winner,Cape Verde,0.0963,963,10000
+Round of 32 16 Winner,Colombia,0.6934,6934,10000
+Round of 32 16 Winner,Ghana,0.3066,3066,10000
+Round of 32 2 Winner,Brazil,0.6691,6691,10000
+Round of 32 2 Winner,Japan,0.3309,3309,10000
+Round of 32 3 Winner,Germany,0.749,7490,10000
+Round of 32 3 Winner,Paraguay,0.251,2510,10000
+Round of 32 4 Winner,Morocco,0.5068,5068,10000
+Round of 32 4 Winner,Netherlands,0.4932,4932,10000
+Round of 32 5 Winner,Norway,0.5056,5056,10000
+Round of 32 5 Winner,Ivory Coast,0.4944,4944,10000
+Round of 32 6 Winner,France,0.7795,7795,10000
+Round of 32 6 Winner,Sweden,0.2205,2205,10000
+Round of 32 7 Winner,Mexico,0.6084,6084,10000
+Round of 32 7 Winner,Ecuador,0.3916,3916,10000
+Round of 32 8 Winner,England,0.8649,8649,10000
+Round of 32 8 Winner,Congo DR,0.1351,1351,10000
+Round of 32 9 Winner,Belgium,0.5757,5757,10000
+Round of 32 9 Winner,Senegal,0.4243,4243,10000
